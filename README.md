@@ -8,6 +8,8 @@ Presentasjonen er delt opp i tre deler og er publisert her:
 * https://skatteetaten.github.io/aurora-spring-boot-presentation/spring-boot.html
 * https://skatteetaten.github.io/aurora-spring-boot-presentation/ref-app.html
 
+Notater/manuskript for gjennomføring finnes her: https://skatteetaten.github.io/aurora-spring-boot-presentation/script.html 
+
 I mappen "examples" finnes kode for flere av eksemplene som ble gjennomgått.
 
 Presentasjonen finnes i "presentation"-mappen og er laget med reveal.js. Les README.md for mer informasjon om hvordan den kan bygges.

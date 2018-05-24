@@ -1,0 +1,18 @@
+plugins {
+  id 'org.ajoberstar.git-publish' version '0.4.1'
+  id 'org.ajoberstar.grgit' version '2.2.0'
+}
+
+gitPublish {
+  branch = 'gh-pages'
+
+  contents {
+    from 'presentation/build/asciidoc/revealjs'
+    from 'notes/build/asciidoc/html5'
+  }
+}
+
+
+task wrapper(type: Wrapper) {
+  gradleVersion = 4.7
+}
