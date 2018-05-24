@@ -521,7 +521,7 @@ table.CodeRay td.code>pre{padding:0}
 <p>Spring Boot er et rammeverk som gjør det lett å lage <strong>stand-alone</strong>, Springbaserte produksjonsapplikasjoner.</p>
 </div>
 <div class="paragraph">
-<p>Har sterke meninger i forhold til bruk av Spring og tredjepartsbiblioteker. De fleste Spring Boot applikasjoner trenger lite konfigurasjon.</p>
+<p>Har sterke meninger, populært kalt konvensjoner, i forhold til bruk av Spring og tredjepartsbiblioteker - både hvilke og hvordan de brukes. De fleste Spring Boot applikasjoner trenger lite konfigurasjon.</p>
 </div>
 <div class="paragraph">
 <p>I sin enkleste form er spring boot automatisk konfigurasjon av applikasjonen
@@ -534,7 +534,7 @@ applikasjonens funksjonalitet.</p>
 Database; spring-boot-starter-jdbc, springavhengigheter + datasourceimplementasjon</p>
 </div>
 <div class="paragraph">
-<p>Auto-configuration is non-invasive. At any point, you can start to define your own configuration to replace specific parts of the auto-configuration. For example, if you add your own DataSource bean, the default embedded database support backs away.</p>
+<p>Auto-configuration er ikke-invasiv. Du kan når som helst definere din egen konfigurasjon for å erstatte deler av auto-konfigurasjonen. For eksempel, dersom du legge til din egen DataSource trekker defaulten fra Spring seg automatisk bort.</p>
 </div>
 </div>
 </div>
@@ -551,22 +551,22 @@ Database; spring-boot-starter-jdbc, springavhengigheter + datasourceimplementasj
 <div class="ulist">
 <ul>
 <li>
+<p>Slette tester</p>
+</li>
+<li>
 <p>pom.xml med spring boot plugin og avhengighet</p>
 </li>
 <li>
-<p>ikke snakke om maven plugin, nevne at vi får versjoner og byggeoppsett derfra.</p>
+<p>maven plugin, nevne at vi får byggeoppsett derfra.</p>
+</li>
+<li>
+<p>parent, vise at vi får versjoner derfra.</p>
 </li>
 </ul>
 </div>
 </li>
 <li>
-<p>Slette tester</p>
-</li>
-<li>
 <p>Se på dependencies</p>
-</li>
-<li>
-<p>Kjør fra IntelliJ</p>
 </li>
 <li>
 <p>Kjør fra kommandolinje;</p>
@@ -585,6 +585,9 @@ java -jar target/demo-0.0.1-SNAPSHOT.jar</pre>
 </div>
 </li>
 <li>
+<p>Kjør fra IntelliJ</p>
+</li>
+<li>
 <p>Classpath scanning (auto configuration).</p>
 </li>
 <li>
@@ -595,10 +598,13 @@ java -jar target/demo-0.0.1-SNAPSHOT.jar</pre>
 <p>Implements CommandLineRunner. Sout hello.</p>
 </li>
 <li>
-<p>Lage HelloService med getGreeting(). Instansiere i DemoApplication.</p>
+<p>Lage GreetingService med getGreeting(). Instansiere i DemoApplication.</p>
 </li>
 <li>
-<p>Fjerne new. Lage constructor. @Component på HelloService.</p>
+<p>Fjerne new. Lage constructor. @Component på GreetingService.</p>
+</li>
+<li>
+<p>Vise field injection, setter-injection og constructor injection.</p>
 </li>
 </ul>
 </div>
@@ -661,6 +667,18 @@ greeting: Hei</pre>
 </div>
 </div>
 </li>
+<li>
+<p>Vise fra kommandolinje</p>
+<div class="literalblock">
+<div class="content">
+<pre>java -jar -Dspring.profiles.active=nor target/demo-0.0.1-SNAPSHOT.jar
+export SPRING_PROFILES_ACTIVE=nor
+java -jar target/demo-0.0.1-SNAPSHOT.jar
+unset SPRING_PROFILES_ACTIVE
+java -jar target/demo-0.0.1-SNAPSHOT.jar</pre>
+</div>
+</div>
+</li>
 </ul>
 </div>
 </li>
@@ -671,13 +689,18 @@ greeting: Hei</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Component</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">HelloService</span> {
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demo</span>;
+
+<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.annotation.Value</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.stereotype.Component</span>;
+
+<span class="annotation">@Component</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">GreetingService</span> {
 
     <span class="directive">private</span> <span class="predefined-type">String</span> greeting;
 
 
-    <span class="directive">public</span> HelloService(<span class="annotation">@Value</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">${greeting:Hello}</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> greeting) {
+    <span class="directive">public</span> GreetingService(<span class="annotation">@Value</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">${greeting:Hello}</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> greeting) {
 
         <span class="local-variable">this</span>.greeting = greeting;
     }
@@ -704,6 +727,34 @@ greeting: Hei</pre>
 </li>
 <li>
 <p>Konfigurere logging (logging.level.com.example.demo = DEBUG)</p>
+<div class="literalblock">
+<div class="content">
+<pre>logging:
+  level:
+    com:
+        example:
+            demo: INFO</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Vise fra kommandolinje:</p>
+<div class="literalblock">
+<div class="content">
+<pre>java -jar -Dlogging.level.com.example.demo=DEBUG target/demo-0.0.1-SNAPSHOT.jar</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Vis at det ikke går via miljøvariabel, samt vise alternativ løsning.</p>
+</li>
+<li>
+<p>Vise logback config file</p>
+<div class="literalblock">
+<div class="content">
+<pre>/home/k77319/projects/github/presentasjon-spring-boot/examples/log/logback.xml</pre>
+</div>
+</div>
 </li>
 </ul>
 </div>
@@ -796,7 +847,7 @@ http --verbose :8080 Accept:text/html</pre>
 <p>Post @RequestBody Map &#8594; UpdateGreeterPayload &#8594; @Valid med @NotNull og @Pattern(regexp = "[A-z\\s]+")</p>
 <div class="literalblock">
 <div class="content">
-<pre>http --verbose ":8080/hello?name=Bent"
+<pre>http --verbose ":8080/greet?name=Bent"
 http --verbose ":8080/greeter" greeter=Espen
 echo '{}' | http --verbose ":8080/greeter"</pre>
 </div>
@@ -819,19 +870,19 @@ echo '{}' | http --verbose ":8080/greeter"</pre>
 <span class="keyword">import</span> <span class="include">java.time.Instant</span>;
 
 <span class="annotation">@RestController</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">HelloController</span> {
+<span class="directive">public</span> <span class="type">class</span> <span class="class">GreetingController</span> {
 
-    <span class="directive">private</span> HelloService helloService;
+    <span class="directive">private</span> GreetingService greetingService;
 
-    <span class="directive">public</span> HelloController(HelloService helloService) {
-        <span class="local-variable">this</span>.helloService = helloService;
+    <span class="directive">public</span> GreetingController(GreetingService greetingService) {
+        <span class="local-variable">this</span>.greetingService = greetingService;
     }
 
-    <span class="annotation">@RequestMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/hello</span><span class="delimiter">&quot;</span></span>)
+    <span class="annotation">@RequestMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/greet</span><span class="delimiter">&quot;</span></span>)
     <span class="directive">public</span> GreetingResponse hello(<span class="annotation">@RequestParam</span>(required = <span class="predefined-constant">false</span>) <span class="predefined-type">String</span> name) {
 
         GreetingResponse response = <span class="keyword">new</span> GreetingResponse();
-        response.greeting = helloService.getGreeting(name);
+        response.greeting = greetingService.getGreeting(name);
         <span class="keyword">return</span> response;
     }
 
@@ -839,7 +890,7 @@ echo '{}' | http --verbose ":8080/greeter"</pre>
     <span class="annotation">@RequestMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/greeter</span><span class="delimiter">&quot;</span></span>)
     <span class="directive">public</span> <span class="type">void</span> updateGreeter(<span class="annotation">@Valid</span> <span class="annotation">@RequestBody</span> UpdateGreeterPayload payload) {
 
-        helloService.setGreeter(payload.greeter);
+        greetingService.setGreeter(payload.greeter);
     }
 }
 
@@ -886,6 +937,40 @@ echo '{}' | http --verbose ":8080/greeter"</pre>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demoweb</span>;
 
+<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.annotation.Value</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.stereotype.Component</span>;
+
+<span class="annotation">@Component</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">GreetingService</span> {
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> greeting;
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> greeter = <span class="string"><span class="delimiter">&quot;</span><span class="content">Bjarte</span><span class="delimiter">&quot;</span></span>;
+
+    <span class="directive">public</span> GreetingService(<span class="annotation">@Value</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">${greeting:Hello}</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> greeting) {
+
+        <span class="local-variable">this</span>.greeting = greeting;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> getGreeting(<span class="predefined-type">String</span> name) {
+
+        <span class="keyword">if</span> (<span class="string"><span class="delimiter">&quot;</span><span class="content">Bent</span><span class="delimiter">&quot;</span></span>.equals(name)) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">IllegalArgumentException</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">name cannot be Bent</span><span class="delimiter">&quot;</span></span>);
+        }
+
+        <span class="keyword">return</span> <span class="predefined-type">String</span>.format(<span class="string"><span class="delimiter">&quot;</span><span class="content">Hello, %s, from %s</span><span class="delimiter">&quot;</span></span>, name, greeter);
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> setGreeter(<span class="predefined-type">String</span> greeter) {
+        <span class="local-variable">this</span>.greeter = greeter;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demoweb</span>;
+
 <span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.GetMapping</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RequestMapping</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RestController</span>;
@@ -918,6 +1003,8 @@ echo '{}' | http --verbose ":8080/greeter"</pre>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demoweb</span>;
 
+<span class="keyword">import</span> <span class="include">java.util.Collections</span>;
+
 <span class="keyword">import</span> <span class="include">org.springframework.boot.web.client.RestTemplateBuilder</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.context.annotation.Bean</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.context.annotation.Configuration</span>;
@@ -929,7 +1016,13 @@ echo '{}' | http --verbose ":8080/greeter"</pre>
     <span class="annotation">@Bean</span>
     RestTemplate restTemplate(RestTemplateBuilder builder) {
 
-        <span class="keyword">return</span> builder.build();
+        RestTemplate restTemplate = builder.build();
+        restTemplate.setInterceptors(<span class="predefined-type">Collections</span>.singletonList((request, body, execution) -&gt; {
+            request.getHeaders().put(<span class="string"><span class="delimiter">&quot;</span><span class="content">custom-header</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">Collections</span>.singletonList(<span class="string"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>));
+            <span class="keyword">return</span> execution.execute(request, body);
+        }));
+        <span class="keyword">return</span> restTemplate;
+
     }
 }</code></pre>
 </div>
@@ -956,6 +1049,7 @@ echo '{}' | http --verbose ":8080/greeter"</pre>
 <span class="keyword">import</span> <span class="include">org.springframework.http.ResponseEntity</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.web.bind.MethodArgumentNotValidException</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.ControllerAdvice</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.ExceptionHandler</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.web.context.request.WebRequest</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler</span>;
 
@@ -965,12 +1059,20 @@ echo '{}' | http --verbose ":8080/greeter"</pre>
 <span class="annotation">@ControllerAdvice</span>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">ErrorHandler</span> <span class="directive">extends</span> ResponseEntityExceptionHandler {
 
+    <span class="annotation">@ExceptionHandler</span>(<span class="exception">IllegalArgumentException</span>.class)
+    <span class="directive">public</span> ResponseEntity&lt;<span class="predefined-type">Map</span>&gt; illegalArgument(<span class="directive">final</span> <span class="exception">IllegalArgumentException</span> e) {
+
+        <span class="keyword">return</span> <span class="keyword">new</span> ResponseEntity&lt;&gt;(<span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">String</span>&gt;() {{
+            put(<span class="string"><span class="delimiter">&quot;</span><span class="content">error</span><span class="delimiter">&quot;</span></span>, e.getMessage());
+        }}, HttpStatus.BAD_REQUEST);
+    }
+
+
     <span class="annotation">@Override</span>
     <span class="directive">protected</span> ResponseEntity&lt;<span class="predefined-type">Object</span>&gt; handleMethodArgumentNotValid(MethodArgumentNotValidException e, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
         <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">String</span>&gt; response = <span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">String</span>&gt;() {{
             put(<span class="string"><span class="delimiter">&quot;</span><span class="content">error</span><span class="delimiter">&quot;</span></span>, e.getMessage());
-            put(<span class="string"><span class="delimiter">&quot;</span><span class="content">field</span><span class="delimiter">&quot;</span></span>, e.getBindingResult().getFieldError().getField());
         }};
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -1035,12 +1137,12 @@ echo '{}' | http --verbose ":8080/greeter"</pre>
 <span class="keyword">import</span> <span class="include">java.time.Instant</span>;
 
 <span class="annotation">@RestController</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">HelloController</span> {
+<span class="directive">public</span> <span class="type">class</span> <span class="class">GreetingController</span> {
 
-    <span class="directive">private</span> HelloService helloService;
+    <span class="directive">private</span> GreetingService greetingService;
 
-    <span class="directive">public</span> HelloController(HelloService helloService) {
-        <span class="local-variable">this</span>.helloService = helloService;
+    <span class="directive">public</span> GreetingController(GreetingService greetingService) {
+        <span class="local-variable">this</span>.greetingService = greetingService;
     }
 
     <span class="annotation">@RequestMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/hello</span><span class="delimiter">&quot;</span></span>)
@@ -1049,7 +1151,7 @@ echo '{}' | http --verbose ":8080/greeter"</pre>
 
         <span class="predefined-type">Thread</span>.sleep(<span class="integer">3000</span>);
         GreetingResponse response = <span class="keyword">new</span> GreetingResponse();
-        response.greeting = helloService.getGreeting(name);
+        response.greeting = greetingService.getGreeting(name);
         <span class="keyword">return</span> response;
     }
 
@@ -1058,7 +1160,7 @@ echo '{}' | http --verbose ":8080/greeter"</pre>
     <span class="annotation">@CacheEvict</span>(cacheNames = <span class="string"><span class="delimiter">&quot;</span><span class="content">hello</span><span class="delimiter">&quot;</span></span>, allEntries = <span class="predefined-constant">true</span>)
     <span class="directive">public</span> <span class="type">void</span> updateGreeter(<span class="annotation">@Valid</span> <span class="annotation">@RequestBody</span> UpdateGreeterPayload payload) {
 
-        <span class="local-variable">this</span>.helloService.setGreeter(payload.greeter);
+        <span class="local-variable">this</span>.greetingService.setGreeter(payload.greeter);
     }
 }
 
@@ -1103,7 +1205,7 @@ echo '{}' | http --verbose ":8080/greeter"</pre>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>time http --verbose :8080/hello?name=Bent
+<pre>time http --verbose :8080/greet?name=Bent
 http --verbose :8080/greeter greeter=Espen</pre>
 </div>
 </div>
@@ -1144,19 +1246,8 @@ get &lt;key&gt;</pre>
 <p>start.spring.io (web, jdbc)</p>
 </li>
 <li>
-<p>Koble til db</p>
+<p>Koble til db i IntelliJ</p>
 </li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>spring.datasource.url: jdbc:oracle:thin:@uil0map-drivein-db02:1521/dbhotel
-spring.datasource.username: CTTAAFBUISHKUUZPIZQEBMNZMCUMTM
-spring.datasource.password: CWTRKlotPuhNdYBslXhOjMGccoABrz</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
 <li>
 <p>Legge inn noe testdata:</p>
 </li>
@@ -1173,12 +1264,6 @@ spring.datasource.password: CWTRKlotPuhNdYBslXhOjMGccoABrz</pre>
 );
 
 insert INTO contact (first_name, lastname, email) VALUES ('Bent', 'Solheim', 'BentAndre.Solheim@skatteetaten.no');</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>http ":8080/contact/
-http ":8080/contact/" firstName=Espen lastName=Strømland email=Espen.Stromland@skatteetaten.no</pre>
 </div>
 </div>
 <div class="ulist">
@@ -1203,6 +1288,13 @@ http ":8080/contact/" firstName=Espen lastName=Strømland email=Espen.Stromland@
 <p>Legg inn config i application.properties</p>
 </li>
 </ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring.datasource.url: ...
+spring.datasource.username: ...
+spring.datasource.password: ...</pre>
+</div>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1301,6 +1393,12 @@ http ":8080/contact/" firstName=Espen lastName=Strømland email=Espen.Stromland@
 }</code></pre>
 </div>
 </div>
+<div class="literalblock">
+<div class="content">
+<pre>http ":8080/contact/
+http ":8080/contact/" firstName=Espen lastName=Strømland email=Espen.Stromland@skatteetaten.no</pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1323,6 +1421,12 @@ http ":8080/contact/" firstName=Espen lastName=Strømland email=Espen.Stromland@
 </div>
 <div class="ulist">
 <ul>
+<li>
+<p>Slett gamle tabeller</p>
+</li>
+<li>
+<p>Lag migrering i src/main/resources/db/migration/V201803021300__create_contact_table_with_data.sql</p>
+</li>
 <li>
 <p>Vis flyway_schema_history</p>
 </li>
@@ -1359,6 +1463,7 @@ http ":8080/contact/" firstName=Espen lastName=Strømland email=Espen.Stromland@
 <span class="keyword">import</span> <span class="include">javax.persistence.GenerationType</span>;
 <span class="keyword">import</span> <span class="include">javax.persistence.Id</span>;
 
+<span class="keyword">import</span> <span class="include">org.apache.logging.log4j.util.Strings</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.data.jpa.repository.JpaRepository</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.http.HttpStatus</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.http.ResponseEntity</span>;
@@ -1367,6 +1472,7 @@ http ":8080/contact/" firstName=Espen lastName=Strømland email=Espen.Stromland@
 <span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.PostMapping</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RequestBody</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RequestMapping</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RequestParam</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RestController</span>;
 
 <span class="annotation">@Entity</span>
@@ -1443,8 +1549,11 @@ http ":8080/contact/" firstName=Espen lastName=Strømland email=Espen.Stromland@
     }
 
     <span class="annotation">@GetMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/</span><span class="delimiter">&quot;</span></span>)
-    <span class="predefined-type">List</span>&lt;Contact&gt; getAllContacts() {
-        <span class="keyword">return</span> contactRepository.findAll();
+    <span class="predefined-type">List</span>&lt;Contact&gt; getAllContacts(<span class="annotation">@RequestParam</span>(required = <span class="predefined-constant">false</span>) <span class="predefined-type">String</span> lastName) {
+        <span class="keyword">if</span> (Strings.isBlank(lastName)) {
+            <span class="keyword">return</span> contactRepository.findAll();
+        }
+        <span class="keyword">return</span> contactRepository.findAllByLastName(lastName);
     }
 
     <span class="annotation">@PostMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/</span><span class="delimiter">&quot;</span></span>)
@@ -1468,10 +1577,10 @@ http ":8080/contact/" firstName=Espen lastName=Strømland email=Espen.Stromland@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>&lt;dependency&gt;
-  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-  &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
-&lt;/dependency&gt;</pre>
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+  <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+  <span class="tag">&lt;artifactId&gt;</span>spring-boot-starter-actuator<span class="tag">&lt;/artifactId&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -1513,17 +1622,17 @@ http://localhost:8080/actuator/health</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>&lt;plugin&gt;
-  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-  &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
-  &lt;executions&gt;
-    &lt;execution&gt;
-      &lt;goals&gt;
-        &lt;goal&gt;build-info&lt;/goal&gt;
-      &lt;/goals&gt;
-    &lt;/execution&gt;
-  &lt;/executions&gt;
-&lt;/plugin&gt;</pre>
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
+  <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+  <span class="tag">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
+  <span class="tag">&lt;executions&gt;</span>
+    <span class="tag">&lt;execution&gt;</span>
+      <span class="tag">&lt;goals&gt;</span>
+        <span class="tag">&lt;goal&gt;</span>build-info<span class="tag">&lt;/goal&gt;</span>
+      <span class="tag">&lt;/goals&gt;</span>
+    <span class="tag">&lt;/execution&gt;</span>
+  <span class="tag">&lt;/executions&gt;</span>
+<span class="tag">&lt;/plugin&gt;</span></code></pre>
 </div>
 </div>
 <div class="literalblock">
@@ -1540,10 +1649,10 @@ http://localhost:8080/actuator/health</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>&lt;plugin&gt;
-  &lt;groupId&gt;pl.project13.maven&lt;/groupId&gt;
-  &lt;artifactId&gt;git-commit-id-plugin&lt;/artifactId&gt;
-&lt;/plugin&gt;</pre>
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
+  <span class="tag">&lt;groupId&gt;</span>pl.project13.maven<span class="tag">&lt;/groupId&gt;</span>
+  <span class="tag">&lt;artifactId&gt;</span>git-commit-id-plugin<span class="tag">&lt;/artifactId&gt;</span>
+<span class="tag">&lt;/plugin&gt;</span></code></pre>
 </div>
 </div>
 <div class="literalblock">
@@ -1887,6 +1996,7 @@ http://localhost:8080/external/echo2/test2</pre>
 
 <span class="annotation">@RunWith</span>(SpringRunner.class)
 <span class="annotation">@SpringBootTest</span>
+<span class="annotation">@AutoConfigureTestDatabase</span>
 <span class="comment">//@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)</span>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">ContactRepositoryTest</span> {
 
@@ -2144,9 +2254,39 @@ http://localhost:8080/external/echo2/test2</pre>
 <div class="literalblock">
 <div class="content">
 <pre>git clone https://github.com/Skatteetaten/openshift-reference-springboot-server.git
-cd openshift-reference-springboot-server
-mvn clean package</pre>
+cd openshift-reference-springboot-server</pre>
 </div>
+</div>
+</li>
+<li>
+<p>Mye detaljer som må inspiseres på egenhånd eller dekkes i andre kurs</p>
+</li>
+<li>
+<p>Vise README.md</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Kommentere spesielt "How to use"</p>
+</li>
+<li>
+<p>RestDoc som et alternativ til Swagger</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>vise pom.xml</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Kommentere Rest Doc: <a href="http://referanse-paas-bas-dev.utv.paas.skead.no/docs/index.html" class="bare">http://referanse-paas-bas-dev.utv.paas.skead.no/docs/index.html</a></p>
+<div class="literalblock">
+<div class="content">
+<pre>mvn clean package</pre>
+</div>
+</div>
+</li>
+</ul>
 </div>
 </li>
 </ul>
@@ -2156,7 +2296,7 @@ mvn clean package</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-04-10 21:57:47 CEST
+Last updated 2018-05-24 10:05:52 CEST
 </div>
 </div>
 </body>
