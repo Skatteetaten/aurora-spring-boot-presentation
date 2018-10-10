@@ -14,7 +14,7 @@ applikasjonens funksjonalitet.
 Startere: eksempel; webapplikasjon; spring-boot-starter-web får da avhengigheter til servletcontainer, webrammeverk, json-parser osv.
 Database; spring-boot-starter-jdbc, springavhengigheter + datasourceimplementasjon
 
-Auto-configuration er ikke-invasiv. Du kan når som helst definere din egen konfigurasjon for å erstatte deler av auto-konfigurasjonen. For eksempel, dersom du legge til din egen DataSource trekker defaulten fra Spring seg automatisk bort.
+Auto-configuration er ikke-inasiv. Du kan når som helst definere din egen konfigurasjon for å erstatte deler av auto-konfigurasjonen. For eksempel, dersom du legge til din egen DataSource trekker defaulten fra Spring seg automatisk bort.
 
 == Spring og Spring Boot Basics
 
@@ -287,6 +287,66 @@ include::{examples}/demo-webjpa/src/main/java/com/example/demowebjpa/ContactCont
 ----
 
 
+== Testing ==
+
+* Nevne at det kan være greit å ikke bruke spring til testing
+* Vise @SpringBootTest
+* Vise hvordan man kan @Autowire inn objekter i testen.
+* Databasetest: Legge til h2 og vise at applikasjonen starter opp med in-memory database automatisk. Demonstrere at @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE) kan brukes til å påvirke dette.
+
+[source,java]
+----
+include::{examples}/demo-webjpa/src/test/java/com/example/demowebjpa/ContactRepositoryTest.java[]
+----
+
+* Vise Controller test uten mocking med (1L som param)
+* Vise @MockBean for ContactRepository
+
+[source,java]
+----
+include::{examples}/demo-webjpa/src/test/java/com/example/demowebjpa/ContactControllerTest.java[]
+----
+
+* To test whether Spring MVC controllers are working as expected, use the @WebMvcTest annotation. @WebMvcTest auto-configures the Spring MVC infrastructure and limits scanned beans to @Controller, @ControllerAdvice, @JsonComponent, Converter, GenericConverter, Filter, WebMvcConfigurer, and HandlerMethodArgumentResolver. Regular @Component beans are not scanned when using this annotation.
+
+* Vise @WebMvcTest(ContactController.class)
+
+[source,java]
+----
+include::{examples}/demo-webjpa/src/test/java/com/example/demowebjpa/ContactEndpointTest.java[]
+----
+
+* Vise @RestClientTest
+
+[source,java]
+----
+include::{examples}/demo-webjpa/src/test/java/com/example/demowebjpa/ExternalServiceControllerTest.java[]
+----
+
+echo_response.json
+
+  {
+    "args": {},
+    "data": "",
+    "files": {},
+    "form": {},
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+      "Accept-Encoding": "gzip, deflate, br",
+      "Accept-Language": "en-US,en;q=0.9,nb;q=0.8",
+      "Connection": "close",
+      "Cookie": "_gauges_unique_month=1; _gauges_unique_year=1; _gauges_unique=1",
+      "Host": "httpbin.org",
+      "Upgrade-Insecure-Requests": "1",
+      "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.167 Safari/537.36"
+    },
+    "json": null,
+    "method": "GET",
+    "origin": "151.187.161.3",
+    "url": "https://httpbin.org/anything/HEPP"
+  }
+
+
 == Actuator
 
 * Legger på en hel del "produksjonstjenester" på applikasjonen for monitorering og management.
@@ -369,152 +429,7 @@ include::{examples}/demo-webjpa/src/main/java/com/example/demowebjpa/ContactCont
 include::{examples}/demo-webjpa/src/main/java/com/example/demowebjpa/SchemaVersionHealthIndicator.java[]
 ----
 
-
-== Metrics
-
-* Instrumentering; hvor lang er responstidene dine? Hvordan har de utviklet seg? Hvor mye minne brukes? CPU?
-
-    http://localhost:8080/actuator/metrics/
-    http://localhost:8080/actuator/metrics/jvm.memory.used
-
-* Lage custom metrics:
-[source,java]
-----
-include::{examples}/demo-webjpa/src/main/java/com/example/demowebjpa/CalculatorController.java[]
-----
-
-* Kalle opp eget endepunkt:
-
-  http ":8080/calc/add?a=3&b=5"
-  http ":8080/calc/add?a=3&b=6"
-
-* Sjekke custom metrics:
-
-  http://localhost:8080/actuator/metrics/
-  http://localhost:8080/actuator/metrics/calc.add
-
-* Enable prometheus:
-
-[source, xml]
-----
-<dependency>
-  <groupId>io.micrometer</groupId>
-  <artifactId>micrometer-registry-prometheus</artifactId>
-</dependency>
-----
-
-  http://localhost:8080/actuator/prometheus
-
-* Skru på histogrammer for distribusjon
-
-  management.metrics.distribution.percentiles-histogram.http=true
-
-  http://localhost:8080/actuator/prometheus
-
-[source,java]
-----
-include::{examples}/demo-webjpa/src/main/java/com/example/demowebjpa/MetricsConfig.java[]
-----
-
-* Utgående httpforespørseler via RestTemplate
-* Vi må unngå High cardinality metrics
-
-[source,java]
-----
-include::{examples}/demo-webjpa/src/main/java/com/example/demowebjpa/ApplicationConfiguration.java[]
-----
-
-[source,java]
-----
-include::{examples}/demo-webjpa/src/main/java/com/example/demowebjpa/ExternalServiceController.java[]
-----
-
-  http://localhost:8080/external/echo1/test1
-  http://localhost:8080/external/echo1/test2
-  http://localhost:8080/external/echo2/test1
-  http://localhost:8080/external/echo2/test2
-
-
-== Testing ==
-
-* Nevne at det kan være greit å ikke bruke spring til testing
-* Vise @SpringBootTest
-* Vise hvordan man kan @Autowire inn objekter i testen.
-* Databasetest: Legge til h2 og vise at applikasjonen starter opp med in-memory database automatisk. Demonstrere at @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE) kan brukes til å påvirke dette.
-
-[source,java]
-----
-include::{examples}/demo-webjpa/src/test/java/com/example/demowebjpa/ContactRepositoryTest.java[]
-----
-
-* Vise Controller test uten mocking med (1L som param)
-* Vise @MockBean for ContactRepository
-
-[source,java]
-----
-include::{examples}/demo-webjpa/src/test/java/com/example/demowebjpa/ContactControllerTest.java[]
-----
-
-* To test whether Spring MVC controllers are working as expected, use the @WebMvcTest annotation. @WebMvcTest auto-configures the Spring MVC infrastructure and limits scanned beans to @Controller, @ControllerAdvice, @JsonComponent, Converter, GenericConverter, Filter, WebMvcConfigurer, and HandlerMethodArgumentResolver. Regular @Component beans are not scanned when using this annotation.
-
-* Vise @WebMvcTest(ContactController.class)
-
-[source,java]
-----
-include::{examples}/demo-webjpa/src/test/java/com/example/demowebjpa/ContactEndpointTest.java[]
-----
-
-* Vise @RestClientTest
-
-[source,java]
-----
-include::{examples}/demo-webjpa/src/test/java/com/example/demowebjpa/ExternalServiceControllerTest.java[]
-----
-
-echo_response.json
-
-  {
-    "args": {},
-    "data": "",
-    "files": {},
-    "form": {},
-    "headers": {
-      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-      "Accept-Encoding": "gzip, deflate, br",
-      "Accept-Language": "en-US,en;q=0.9,nb;q=0.8",
-      "Connection": "close",
-      "Cookie": "_gauges_unique_month=1; _gauges_unique_year=1; _gauges_unique=1",
-      "Host": "httpbin.org",
-      "Upgrade-Insecure-Requests": "1",
-      "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.167 Safari/537.36"
-    },
-    "json": null,
-    "method": "GET",
-    "origin": "151.187.161.3",
-    "url": "https://httpbin.org/anything/HEPP"
-  }
-
-
-== Developer tools ==
-
 == Honourable mentions ==
 * WebClient
 * Spring security
 * Spring cloud
-
-
-== Referanseapplikasjonen
-
-* Tilrettelagt for deploy mot openshift
-
-  git clone https://github.com/Skatteetaten/openshift-reference-springboot-server.git
-  cd openshift-reference-springboot-server
-
-* Mye detaljer som må inspiseres på egenhånd eller dekkes i andre kurs
-* Vise README.md
-** Kommentere spesielt "How to use"
-** RestDoc som et alternativ til Swagger
-* vise pom.xml
-** Kommentere Rest Doc: http://referanse-paas-bas-dev.utv.paas.skead.no/docs/index.html
-
-  mvn clean package
