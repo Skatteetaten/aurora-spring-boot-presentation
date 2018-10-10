@@ -10,9 +10,8 @@ Bent André Solheim, Aurora OpenShift
 * Webapplikasjon (HTTP-API) + RestTemplate
 * Caching
 * Databaseaksess (JDBC + JPA, migreringer)
-* Actuator, Helseendepunkt, Metrikker
 * Testing
-//* Dev Tools
+* Actuator, Helseendepunkt
 
 
 == Forutsetninger
@@ -25,7 +24,6 @@ Bent André Solheim, Aurora OpenShift
 * JAX-RS + Jersey
 * WebFlux
 * Spring Security
-* Spring Rest Doc (brukes i refapp)
 
 
 == Hva er Spring Boot?
@@ -77,7 +75,6 @@ Studere en minimal Spring Boot applikasjon
 * Dependency Injection
 * Konfigurasjon (relaxed binding)
 * Logging
-//* Application Lifecycle
 
 
 == Basics, oppsummering
@@ -186,57 +183,6 @@ spring-boot-starter-data-jpa
 * Automatisk eksekvering av databasemigreringer
 
 
-== Actuator
-* "Management Interface"
-* Egen port
-
-
-== Helseendepunkt
-* Avgjøre om applikasjonen fungerer som den skal
-* Standardsjekker for mange teknologier
-* Lett å legge på egne sjekker
-
-
-== Demo ==
-* Legge på actuator støtte
-* Se på de ulike endepunktene (spesielt /health og /info)
-* Legge på info i /info-endepunktet
-* Lage en egen helsesjekk
-
-
-== Actuator oppsummering ==
-
-
-== Metrikker
-* Instrumentering av applikasjonen
-* Kommer med når man tar inn actuator
-* Micrometer (slf4j for metrikker)
-* Dimensional metrics
-
-    http_server_requests_seconds_count{method="GET",status="200",uri="/actuator/health",} 10.0
-
-* Støtte for det fleste populære metrikksystemer: *Prometheus*, Netflix Atlas, CloudWatch, Datadog, Graphite, Ganglia, JMX, Influx/Telegraf, New Relic, StatsD, SignalFx, and Wavefront.
-* Automatisk scraping på OpenShift
-
-== Metrikker, automatisk støtte for
-* jvm metrics (heap, threads, gc, max, min, current)
-* logback (logghendelser pr level)
-* tomcat (bytes sent/received, threads, requests, sessions ++)
-* DataSource (hikari)
-* Innkomne og utgående forespørsler
-
-
-== Demo ==
-* Se på standardmetrikkene
-* Lage endepunkt som legger på custom metrics
-* Se på prometheus integrasjonen
-* Metrikker for utgående trafikk
-* Unngå "High cardinality metrics"
-
-
-== Metrikker oppsummering ==
-
-
 == Testing
 * Unngå å bruke spring til testing
 * Testing av databasekode (testdatabase)
@@ -256,5 +202,22 @@ spring-boot-starter-data-jpa
 == Testing oppsummering ==
 
 
-== Neste
-link:ref-app.html[Referansearkitektur]
+== Actuator
+* "Management Interface"
+* Egen port
+
+
+== Helseendepunkt
+* Avgjøre om applikasjonen fungerer som den skal
+* Standardsjekker for mange teknologier
+* Lett å legge på egne sjekker
+
+
+== Demo ==
+* Legge på actuator støtte
+* Se på de ulike endepunktene (spesielt /health og /info)
+* Legge på info i /info-endepunktet
+* Lage en egen helsesjekk
+
+
+== Actuator oppsummering ==

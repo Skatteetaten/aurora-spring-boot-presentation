@@ -1,30 +1,22 @@
 = Spring Boot og Referanse-arkitektur
 Bent André Solheim, Utviklingsplattform
-2018-02-13
+2018-10-10
 
 :revnumber: {project-version}
 
-== Del 1, 4+ timer
+== Agenda, ca 5 timer
 * Spring og Spring Boot Basics
 * Webapplikasjon (HTTP-API) + RestTemplate
 * Caching
 * Databaseaksess (JDBC + JPA, migreringer)
-* Actuator, Helseendepunkt, Metrikker
+* Actuator, Helseendepunkt
 * Testing
-
-== Del 2, ca 1 time
-* Hvorfor referanseapplikasjon?
-* Hvorfor Spring Boot?
-* Ikke-funksjonelle krav fra Aurora
-* Referanseapplikasjonen
 
 == Målsetning; Ferdighet
 * Være i stand til å ta i bruk Spring Boots mest sentrale egenskaper for utvikle javaapplikasjoner i henhold til Utviklingsplattforms retningslinjer for javaapplikasjoner.
-* Kunne bruke Referanseapplikasjonen som basis for sin neste applikasjon.
 
 == Målsetning; Holdning
 * Forstå omfanget av egenskapene i Spring Boot og at man ofte kan finne løsninger på vanlige problemer i rammeverket fremfor å måtte utvikle dem selv.
-* Forstå årsakene til og fordelene med at man har en referansearkitektur i Skatteetaten.
 
 == Neste
 * link:spring-boot.html[Introduksjon til Spring Boot]
