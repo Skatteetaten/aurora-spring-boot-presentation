@@ -10,7 +10,7 @@ buildscript {
 
 plugins {
   id 'org.asciidoctor.convert' version '1.5.3'
-  id 'com.github.jruby-gradle.base' version '1.5.0'
+  id 'com.github.jruby-gradle.base' version '1.6.0'
 }
 apply plugin: 'com.github.jruby-gradle.base'
 apply plugin: 'org.ysb33r.vfs'
@@ -26,6 +26,7 @@ ext {
 
 repositories {
   jcenter()
+  maven { url "http://rubygems-proxy.torquebox.org/releases" }
 }
 
 dependencies {
@@ -46,8 +47,12 @@ task download {
           revealjsDir, recursive: true, overwrite: true
       cp "zip:http://aurora/nexus/content/repositories/releases/ske/aurora/opplaering/aurora-revealjs-theme/1.1.0/aurora-revealjs-theme-1.1.0.zip",
           revealjsDir, recursive: true, overwrite: true
-
     }
+    copy{
+      from ("${revealjsDir}/reveal.js-${revealjsVersion}")
+      into "${revealjsDir}"
+    }
+    new File(revealjsDir, "reveal.js-${revealjsVersion}").deleteDir()
   }
 }
 
@@ -67,8 +72,7 @@ asciidoctor {
   sources {
     include(
         'index.adoc',
-        'spring-boot.adoc',
-        'ref-app.adoc'
+        'spring-boot.adoc'
     )
   }
 
@@ -110,5 +114,5 @@ asciidoctor {
 
 
 task wrapper(type: Wrapper) {
-  gradleVersion = 4.1
+  gradleVersion = "4.10.2"
 }
