@@ -1,3 +1,5 @@
+build_
+secrets.txt
 target/
 !.mvn/wrapper/maven-wrapper.jar
 

@@ -1,4 +1,4 @@
-= Spring Boot og Referanse-arkitektur
+= Intro til Spring Boot
 Bent André Solheim, Utviklingsplattform
 2018-10-10
 
@@ -9,8 +9,8 @@ Bent André Solheim, Utviklingsplattform
 * Webapplikasjon (HTTP-API) + RestTemplate
 * Caching
 * Databaseaksess (JDBC + JPA, migreringer)
-* Actuator, Helseendepunkt
 * Testing
+* Actuator, Helseendepunkt
 
 == Målsetning; Ferdighet
 * Være i stand til å ta i bruk Spring Boots mest sentrale egenskaper for utvikle javaapplikasjoner i henhold til Utviklingsplattforms retningslinjer for javaapplikasjoner.

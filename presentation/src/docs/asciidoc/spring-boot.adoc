@@ -127,7 +127,7 @@ Studere en minimal Spring Boot applikasjon
 
 
 == Demo
-* Skru på caching for /hello
+* Skru på caching for /greeting
 * @CacheEvict for POST /greeter
 * Simple Cache
 * Redis

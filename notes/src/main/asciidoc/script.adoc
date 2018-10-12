@@ -52,8 +52,9 @@ Auto-configuration er ikke-inasiv. Du kan når som helst definere din egen konfi
 
     java -Dgreeting=Hei -jar target/demo-0.0.1-SNAPSHOT.jar
 
-    export GREETING=Hei                                                                                                                                                          1303ms  Mon Apr  2 22:13:35 2018
+    export GREETING=Hei
     java -jar target/demo-0.0.1-SNAPSHOT.jar
+    set -e GREETING
 
 ** profiler (engelsk og norsk profil)
 *** Bytte til application.yml
@@ -76,7 +77,7 @@ Auto-configuration er ikke-inasiv. Du kan når som helst definere din egen konfi
     java -jar -Dspring.profiles.active=nor target/demo-0.0.1-SNAPSHOT.jar
     export SPRING_PROFILES_ACTIVE=nor
     java -jar target/demo-0.0.1-SNAPSHOT.jar
-    unset SPRING_PROFILES_ACTIVE
+    set -e SPRING_PROFILES_ACTIVE
     java -jar target/demo-0.0.1-SNAPSHOT.jar
 
 [source,java]
@@ -101,9 +102,14 @@ include::{examples}/demo-simple/src/main/java/com/example/demo/GreetingService.j
 
 ** Vis at det ikke går via miljøvariabel, samt vise alternativ løsning.
 
-** Vise logback config file
+  log:
+      demo: DEBUG
 
-  /home/k77319/projects/github/presentasjon-spring-boot/examples/log/logback.xml
+  logging:
+      level:
+          com:
+              example:
+                  demo: ${log.demo}
 
 
 == Spring MVC
@@ -151,7 +157,16 @@ include::{examples}/demo-web/src/main/java/com/example/demoweb/GreetingControlle
 include::{examples}/demo-web/src/main/java/com/example/demoweb/GreetingService.java[]
 ----
 
+** Generell error handling
 
+    echo '{}' | http --verbose ":8080/greeter"
+
+[source,java]
+----
+include::{examples}/demo-web/src/main/java/com/example/demoweb/ErrorHandler.java[]
+----
+
+** Kalle ekstern tjeneste
 [source,java]
 ----
 include::{examples}/demo-web/src/main/java/com/example/demoweb/ExternalServiceController.java[]
@@ -160,15 +175,6 @@ include::{examples}/demo-web/src/main/java/com/example/demoweb/ExternalServiceCo
 [source,java]
 ----
 include::{examples}/demo-web/src/main/java/com/example/demoweb/ApplicationConfiguration.java[]
-----
-
-** Generell error handling
-
-    echo '{}' | http --verbose ":8080/greeter"
-
-[source,java]
-----
-include::{examples}/demo-web/src/main/java/com/example/demoweb/ErrorHandler.java[]
 ----
 
 
