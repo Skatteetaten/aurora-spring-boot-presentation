@@ -1,12 +1,11 @@
 # aurora-spring-boot-presentation
 
-Dette repoet inneholder code for slides og eksempler i forbindelse med kurset "Introduksjon til Spring Boot og Referanseapplikasjonen"
+Dette repoet inneholder code for slides og eksempler i forbindelse med kurset "Introduksjon til Spring Boot"
 
 Presentasjonen er delt opp i tre deler og er publisert her:
 
 * https://skatteetaten.github.io/aurora-spring-boot-presentation/index.html
 * https://skatteetaten.github.io/aurora-spring-boot-presentation/spring-boot.html
-* https://skatteetaten.github.io/aurora-spring-boot-presentation/ref-app.html
 
 Notater/manuskript for gjennomføring finnes her: https://skatteetaten.github.io/aurora-spring-boot-presentation/script.html 
 
