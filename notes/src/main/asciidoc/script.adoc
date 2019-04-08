@@ -60,17 +60,11 @@ Auto-configuration er ikke-inasiv. Du kan når som helst definere din egen konfi
 *** Bytte til application.yml
 *** Lage profile for nor
 
-    spring:
-      profiles:
-        active: nor
-    ---
-    spring:
-        profiles: en
-    greeting: Hello
-    ---
-    spring:
-        profiles: nor
-    greeting: Hei
+[source,yml]
+----
+include::{examples}/demo-simple/src/main/resources/application.yml[]
+----
+
 
 *** Vise fra kommandolinje
 
@@ -93,8 +87,8 @@ include::{examples}/demo-simple/src/main/java/com/example/demo/GreetingService.j
   logging:
     level:
       com:
-          example:
-              demo: INFO
+        example:
+          demo: INFO
 
 ** Vise fra kommandolinje:
 
@@ -103,13 +97,13 @@ include::{examples}/demo-simple/src/main/java/com/example/demo/GreetingService.j
 ** Vis at det ikke går via miljøvariabel, samt vise alternativ løsning.
 
   log:
-      demo: DEBUG
+    demo: DEBUG
 
   logging:
-      level:
-          com:
-              example:
-                  demo: ${log.demo}
+    level:
+      com:
+        example:
+          demo: ${log.demo}
 
 
 == Spring MVC
@@ -182,10 +176,7 @@ include::{examples}/demo-web/src/main/java/com/example/demoweb/ApplicationConfig
 * Legg på
 [source,xml]
 ----
-<dependency>
-  <groupId>org.springframework.boot</groupId>
-  <artifactId>spring-boot-starter-cache</artifactId>
-</dependency>
+include::{examples}/demo-webcache/pom.xml[tag=dep-cache]
 ----
 [source,java]
 ----
@@ -205,10 +196,7 @@ include::{examples}/demo-webcache/src/main/java/com/example/demowebcache/Greetin
 * Ta inn redis i pom.xml
 [source,xml]
 ----
-<dependency>
-  <groupId>org.springframework.boot</groupId>
-  <artifactId>spring-boot-starter-data-redis</artifactId>
-</dependency>
+include::{examples}/demo-webcache/pom.xml[tag=dep-redis]
 ----
 
   docker run -p 6379:6379 --rm --name redis redis
@@ -223,32 +211,18 @@ include::{examples}/demo-webcache/src/main/java/com/example/demowebcache/Greetin
 * Legge inn noe testdata:
 [source,sql]
 ----
-CREATE TABLE contact
-(
-  id NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
-  first_name VARCHAR(255),
-  lastname VARCHAR(255),
-  email VARCHAR(255)
-);
-
-insert INTO contact (first_name, lastname, email) VALUES ('Bent', 'Solheim', 'BentAndre.Solheim@skatteetaten.no');
+include::{examples}/demo-webjdbc/src/main/resources/db/migration/V20180409203000__create_contact_table.sql[]
 ----
 
-* Legge på Oracle driver
+* Legge på JDBC driver
 [source,java]
 ----
-<dependency>
-  <groupId>com.oracle</groupId>
-  <artifactId>ojdbc7</artifactId>
-  <version>12.1.0.2.p19158500</version>
-</dependency>
+include::{examples}/demo-webjdbc/pom.xml[tag=dep-jdbc]
 ----
 * Legg inn config i application.properties
 [source]
 ----
-spring.datasource.url: ...
-spring.datasource.username: ...
-spring.datasource.password: ...
+include::{examples}/demo-webjdbc/src/main/resources/application.properties[]
 ----
 
 [source,java]
@@ -265,10 +239,7 @@ include::{examples}/demo-webjdbc/src/main/java/com/example/demowebjdbc/ContactCo
 
 [source,java]
 ----
-<dependency>
-  <groupId>org.flywaydb</groupId>
-  <artifactId>flyway-core</artifactId>
-</dependency>
+include::{examples}/demo-webjdbc/pom.xml[tag=dep-flyway]
 ----
 
 * Slett gamle tabeller

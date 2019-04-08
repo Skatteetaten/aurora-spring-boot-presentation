@@ -1,6 +1,6 @@
 = Intro til Spring Boot
 Bent André Solheim, Aurora OpenShift
-2018-02-13
+2019-04-11
 
 :revnumber: {project-version}
 
