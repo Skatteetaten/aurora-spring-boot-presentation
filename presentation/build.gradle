@@ -71,8 +71,7 @@ asciidoctor {
 
   sources {
     include(
-        'index.adoc',
-        'spring-boot.adoc'
+        'index.adoc'
     )
   }
 
@@ -110,9 +109,4 @@ asciidoctor {
       "asciidoctor-reveal.js-${asciidoctorBackendVersion}/templates/slim").absolutePath]
 
   dependsOn download
-}
-
-
-task wrapper(type: Wrapper) {
-  gradleVersion = "4.10.2"
 }

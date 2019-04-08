@@ -11,8 +11,3 @@ gitPublish {
     from 'notes/build/asciidoc/html5'
   }
 }
-
-
-task wrapper(type: Wrapper) {
-  gradleVersion = 4.7
-}
