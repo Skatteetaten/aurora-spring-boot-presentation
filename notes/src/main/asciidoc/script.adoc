@@ -176,7 +176,7 @@ include::{examples}/demo-web/src/main/java/com/example/demoweb/ApplicationConfig
 * Legg på
 [source,xml]
 ----
-include::{examples}/demo-webcache/pom.xml[tag=dep-cache]
+include::{examples}/demo-webcache/pom.xml[tag=dep-cache,indent=0]
 ----
 [source,java]
 ----
@@ -196,7 +196,7 @@ include::{examples}/demo-webcache/src/main/java/com/example/demowebcache/Greetin
 * Ta inn redis i pom.xml
 [source,xml]
 ----
-include::{examples}/demo-webcache/pom.xml[tag=dep-redis]
+include::{examples}/demo-webcache/pom.xml[tag=dep-redis,indent=0]
 ----
 
   docker run -p 6379:6379 --rm --name redis redis
@@ -217,7 +217,7 @@ include::{examples}/demo-webjdbc/src/main/resources/db/migration/V20180409203000
 * Legge på JDBC driver
 [source,java]
 ----
-include::{examples}/demo-webjdbc/pom.xml[tag=dep-jdbc]
+include::{examples}/demo-webjdbc/pom.xml[tag=dep-jdbc,indent=0]
 ----
 * Legg inn config i application.properties
 [source]
@@ -239,7 +239,7 @@ include::{examples}/demo-webjdbc/src/main/java/com/example/demowebjdbc/ContactCo
 
 [source,java]
 ----
-include::{examples}/demo-webjdbc/pom.xml[tag=dep-flyway]
+include::{examples}/demo-webjdbc/pom.xml[tag=dep-flyway,indent=0]
 ----
 
 * Slett gamle tabeller
@@ -252,10 +252,7 @@ include::{examples}/demo-webjdbc/pom.xml[tag=dep-flyway]
 * Legg på avhengighet
 [source,xml]
 ----
-<dependency>
-  <groupId>org.springframework.boot</groupId>
-  <artifactId>spring-boot-starter-data-jpa</artifactId>
-</dependency>
+include::{examples}/demo-webjpa/pom.xml[tag=dep-jpa,indent=0]
 ----
 
 [source,java]
@@ -330,10 +327,7 @@ echo_response.json
 
 [source,xml]
 ----
-<dependency>
-  <groupId>org.springframework.boot</groupId>
-  <artifactId>spring-boot-starter-actuator</artifactId>
-</dependency>
+include::{examples}/demo-webjpa/pom.xml[tag=dep-actuator,indent=0]
 ----
 
 * Vise med lite info:
@@ -355,17 +349,7 @@ echo_response.json
 
 [source,xml]
 ----
-<plugin>
-  <groupId>org.springframework.boot</groupId>
-  <artifactId>spring-boot-maven-plugin</artifactId>
-  <executions>
-    <execution>
-      <goals>
-        <goal>build-info</goal>
-      </goals>
-    </execution>
-  </executions>
-</plugin>
+include::{examples}/demo-webjpa/pom.xml[tag=plugin-sb,indent=0]
 ----
   http://localhost:8080/actuator/info
 
@@ -373,10 +357,7 @@ echo_response.json
 
 [source,xml]
 ----
-<plugin>
-  <groupId>pl.project13.maven</groupId>
-  <artifactId>git-commit-id-plugin</artifactId>
-</plugin>
+include::{examples}/demo-webjpa/pom.xml[tag=plugin-git,indent=0]
 ----
 
   git init
