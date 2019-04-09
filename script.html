@@ -534,7 +534,7 @@ applikasjonens funksjonalitet.</p>
 Database; spring-boot-starter-jdbc, springavhengigheter + datasourceimplementasjon</p>
 </div>
 <div class="paragraph">
-<p>Auto-configuration er ikke-invasiv. Du kan når som helst definere din egen konfigurasjon for å erstatte deler av auto-konfigurasjonen. For eksempel, dersom du legge til din egen DataSource trekker defaulten fra Spring seg automatisk bort.</p>
+<p>Auto-configuration er ikke-inasiv. Du kan når som helst definere din egen konfigurasjon for å erstatte deler av auto-konfigurasjonen. For eksempel, dersom du legge til din egen DataSource trekker defaulten fra Spring seg automatisk bort.</p>
 </div>
 </div>
 </div>
@@ -637,8 +637,9 @@ java -jar target/demo-0.0.1-SNAPSHOT.jar</pre>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>export GREETING=Hei                                                                                                                                                          1303ms  Mon Apr  2 22:13:35 2018
-java -jar target/demo-0.0.1-SNAPSHOT.jar</pre>
+<pre>export GREETING=Hei
+java -jar target/demo-0.0.1-SNAPSHOT.jar
+set -e GREETING</pre>
 </div>
 </div>
 </li>
@@ -651,22 +652,38 @@ java -jar target/demo-0.0.1-SNAPSHOT.jar</pre>
 </li>
 <li>
 <p>Lage profile for nor</p>
-<div class="literalblock">
-<div class="content">
-<pre>spring:
-  profiles:
-    active: nor
----
-spring:
-    profiles: en
-greeting: Hello
----
-spring:
-    profiles: nor
-greeting: Hei</pre>
-</div>
+</li>
+</ul>
 </div>
 </li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yml"><span class="key">spring</span>:
+  <span class="key">profiles</span>:
+    <span class="key">active</span>: <span class="string"><span class="content">nor</span></span>
+
+<span class="head"><span class="head">---</span></span>
+
+<span class="key">spring</span>:
+    <span class="key">profiles</span>: <span class="string"><span class="content">en</span></span>
+
+<span class="key">greeting</span>: <span class="string"><span class="content">Hello</span></span>
+
+<span class="head"><span class="head">---</span></span>
+
+<span class="key">spring</span>:
+    <span class="key">profiles</span>: <span class="string"><span class="content">nor</span></span>
+
+<span class="key">greeting</span>: <span class="string"><span class="content">Hei</span></span></code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
 <li>
 <p>Vise fra kommandolinje</p>
 <div class="literalblock">
@@ -674,15 +691,9 @@ greeting: Hei</pre>
 <pre>java -jar -Dspring.profiles.active=nor target/demo-0.0.1-SNAPSHOT.jar
 export SPRING_PROFILES_ACTIVE=nor
 java -jar target/demo-0.0.1-SNAPSHOT.jar
-unset SPRING_PROFILES_ACTIVE
+set -e SPRING_PROFILES_ACTIVE
 java -jar target/demo-0.0.1-SNAPSHOT.jar</pre>
 </div>
-</div>
-</li>
-</ul>
-</div>
-</li>
-</ul>
 </div>
 </li>
 </ul>
@@ -732,8 +743,8 @@ java -jar target/demo-0.0.1-SNAPSHOT.jar</pre>
 <pre>logging:
   level:
     com:
-        example:
-            demo: INFO</pre>
+      example:
+        demo: INFO</pre>
 </div>
 </div>
 </li>
@@ -747,12 +758,19 @@ java -jar target/demo-0.0.1-SNAPSHOT.jar</pre>
 </li>
 <li>
 <p>Vis at det ikke går via miljøvariabel, samt vise alternativ løsning.</p>
-</li>
-<li>
-<p>Vise logback config file</p>
 <div class="literalblock">
 <div class="content">
-<pre>/home/k77319/projects/github/presentasjon-spring-boot/examples/log/logback.xml</pre>
+<pre>log:
+  demo: DEBUG</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>logging:
+  level:
+    com:
+      example:
+        demo: ${log.demo}</pre>
 </div>
 </div>
 </li>
@@ -967,66 +985,6 @@ echo '{}' | http --verbose ":8080/greeter"</pre>
 }</code></pre>
 </div>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demoweb</span>;
-
-<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.GetMapping</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RequestMapping</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RestController</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.web.client.RestTemplate</span>;
-
-<span class="keyword">import</span> <span class="include">java.util.Map</span>;
-
-<span class="annotation">@RestController</span>
-<span class="annotation">@RequestMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/external</span><span class="delimiter">&quot;</span></span>)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">ExternalServiceController</span> {
-
-    <span class="directive">private</span> RestTemplate restTemplate;
-
-
-    <span class="directive">public</span> ExternalServiceController(RestTemplate restTemplate) {
-
-        <span class="local-variable">this</span>.restTemplate = restTemplate;
-    }
-
-
-    <span class="annotation">@GetMapping</span>
-    <span class="directive">public</span> <span class="predefined-type">Map</span> echo() {
-
-        <span class="keyword">return</span> restTemplate.getForEntity(<span class="string"><span class="delimiter">&quot;</span><span class="content">https://httpbin.org/anything/test</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">Map</span>.class).getBody();
-    }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demoweb</span>;
-
-<span class="keyword">import</span> <span class="include">java.util.Collections</span>;
-
-<span class="keyword">import</span> <span class="include">org.springframework.boot.web.client.RestTemplateBuilder</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.context.annotation.Bean</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.context.annotation.Configuration</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.web.client.RestTemplate</span>;
-
-<span class="annotation">@Configuration</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">ApplicationConfiguration</span> {
-
-    <span class="annotation">@Bean</span>
-    RestTemplate restTemplate(RestTemplateBuilder builder) {
-
-        RestTemplate restTemplate = builder.build();
-        restTemplate.setInterceptors(<span class="predefined-type">Collections</span>.singletonList((request, body, execution) -&gt; {
-            request.getHeaders().put(<span class="string"><span class="delimiter">&quot;</span><span class="content">custom-header</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">Collections</span>.singletonList(<span class="string"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>));
-            <span class="keyword">return</span> execution.execute(request, body);
-        }));
-        <span class="keyword">return</span> restTemplate;
-
-    }
-}</code></pre>
-</div>
-</div>
 <div class="ulist">
 <ul>
 <li>
@@ -1081,6 +1039,73 @@ echo '{}' | http --verbose ":8080/greeter"</pre>
 }</code></pre>
 </div>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>Kalle ekstern tjeneste</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>package com.example.demoweb;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Map;
+
+@RestController
+@RequestMapping("/external")
+public class ExternalServiceController {
+
+    private RestTemplate restTemplate;
+
+
+    public ExternalServiceController(RestTemplate restTemplate) {
+
+        this.restTemplate = restTemplate;
+    }
+
+
+    @GetMapping
+    public Map echo() {
+
+        return restTemplate.getForEntity("https://httpbin.org/anything/test", Map.class).getBody();
+    }
+}</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demoweb</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.Collections</span>;
+
+<span class="keyword">import</span> <span class="include">org.springframework.boot.web.client.RestTemplateBuilder</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.context.annotation.Bean</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.context.annotation.Configuration</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.client.RestTemplate</span>;
+
+<span class="annotation">@Configuration</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ApplicationConfiguration</span> {
+
+    <span class="annotation">@Bean</span>
+    RestTemplate restTemplate(RestTemplateBuilder builder) {
+
+        RestTemplate restTemplate = builder.build();
+        restTemplate.setInterceptors(<span class="predefined-type">Collections</span>.singletonList((request, body, execution) -&gt; {
+            request.getHeaders().put(<span class="string"><span class="delimiter">&quot;</span><span class="content">custom-header</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">Collections</span>.singletonList(<span class="string"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>));
+            <span class="keyword">return</span> execution.execute(request, body);
+        }));
+        <span class="keyword">return</span> restTemplate;
+
+    }
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1096,8 +1121,8 @@ echo '{}' | http --verbose ":8080/greeter"</pre>
 <div class="listingblock">
 <div class="content">
 <pre>&lt;dependency&gt;
-  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-  &lt;artifactId&gt;spring-boot-starter-cache&lt;/artifactId&gt;
+	&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-boot-starter-cache&lt;/artifactId&gt;
 &lt;/dependency&gt;</pre>
 </div>
 </div>
@@ -1222,8 +1247,8 @@ http --verbose :8080/greeter greeter=Espen</pre>
 <div class="listingblock">
 <div class="content">
 <pre>&lt;dependency&gt;
-  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-  &lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;
+	&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;
 &lt;/dependency&gt;</pre>
 </div>
 </div>
@@ -1246,6 +1271,14 @@ get &lt;key&gt;</pre>
 <p>start.spring.io (web, jdbc)</p>
 </li>
 <li>
+<p>starte postgres via Docker:</p>
+<div class="literalblock">
+<div class="content">
+<pre>docker run --rm --name postgres -e POSTGRES_PASSWORD=123dev -d -p 5432:5432 postgres</pre>
+</div>
+</div>
+</li>
+<li>
 <p>Koble til db i IntelliJ</p>
 </li>
 <li>
@@ -1257,28 +1290,27 @@ get &lt;key&gt;</pre>
 <div class="content">
 <pre>CREATE TABLE contact
 (
-  id NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
-  first_name VARCHAR(255),
-  lastname VARCHAR(255),
-  email VARCHAR(255)
+    id SERIAL PRIMARY KEY,
+    first_name VARCHAR,
+    last_name VARCHAR,
+    email VARCHAR
 );
 
-insert INTO contact (first_name, lastname, email) VALUES ('Bent', 'Solheim', 'BentAndre.Solheim@skatteetaten.no');</pre>
+insert INTO contact (first_name, last_name, email) VALUES ('Bent', 'Solheim', 'BentAndre.Solheim@skatteetaten.no');</pre>
 </div>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Legge på Oracle driver</p>
+<p>Legge på JDBC driver</p>
 </li>
 </ul>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre>&lt;dependency&gt;
-  &lt;groupId&gt;com.oracle&lt;/groupId&gt;
-  &lt;artifactId&gt;ojdbc7&lt;/artifactId&gt;
-  &lt;version&gt;12.1.0.2.p19158500&lt;/version&gt;
+  &lt;groupId&gt;org.postgresql&lt;/groupId&gt;
+  &lt;artifactId&gt;postgresql&lt;/artifactId&gt;
 &lt;/dependency&gt;</pre>
 </div>
 </div>
@@ -1291,9 +1323,9 @@ insert INTO contact (first_name, lastname, email) VALUES ('Bent', 'Solheim', 'Be
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>spring.datasource.url: ...
-spring.datasource.username: ...
-spring.datasource.password: ...</pre>
+<pre>spring.datasource.url: jdbc:postgresql://localhost/postgres
+spring.datasource.username: postgres
+spring.datasource.password: 123dev</pre>
 </div>
 </div>
 <div class="listingblock">
@@ -1349,7 +1381,7 @@ spring.datasource.password: ...</pre>
     }
 
     <span class="directive">public</span> <span class="type">void</span> createContact(Contact c) {
-        jdbcTemplate.update(<span class="string"><span class="delimiter">&quot;</span><span class="content">insert into CONTACT (FIRST_NAME, LASTNAME, EMAIL) values (?, ?, ?)</span><span class="delimiter">&quot;</span></span>, c.firstName, c.lastName, c.email);
+        jdbcTemplate.update(<span class="string"><span class="delimiter">&quot;</span><span class="content">insert into CONTACT (FIRST_NAME, LAST_NAME, EMAIL) values (?, ?, ?)</span><span class="delimiter">&quot;</span></span>, c.firstName, c.lastName, c.email);
     }
 }
 
@@ -1566,6 +1598,332 @@ http ":8080/contact/" firstName=Espen lastName=Strømland email=Espen.Stromland@
 </div>
 </div>
 <div class="sect1">
+<h2 id="_testing">Testing</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Nevne at det kan være greit å ikke bruke spring til testing</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>&lt;dependency&gt;
+  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+  &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Vise @SpringBootTest</p>
+</li>
+<li>
+<p>Vise hvordan man kan @Autowire inn objekter i testen.</p>
+</li>
+<li>
+<p>Databasetest: Legge til h2 og vise at applikasjonen starter opp med in-memory database automatisk. Demonstrere at @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE) kan brukes til å påvirke dette.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>&lt;dependency&gt;
+  &lt;groupId&gt;com.h2database&lt;/groupId&gt;
+  &lt;artifactId&gt;h2&lt;/artifactId&gt;
+  &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Redusere logging</p>
+<div class="ulist">
+<ul>
+<li>
+<p>I src/test/resources/logback.xml</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;configuration&gt;&lt;!--&lt;root level="error" /&gt;--&gt;&lt;/configuration&gt;</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>I /src/test/resources/application.properties</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring.main.banner-mode: off</pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_repository_test">Repository test</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demowebjpa</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.assertj.core.api.Assertions.assertThat</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.List</span>;
+
+<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
+<span class="keyword">import</span> <span class="include">org.junit.runner.RunWith</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.annotation.Autowired</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.boot.test.context.SpringBootTest</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.test.context.junit4.SpringRunner</span>;
+
+<span class="annotation">@RunWith</span>(SpringRunner.class)
+<span class="annotation">@SpringBootTest</span>
+<span class="annotation">@AutoConfigureTestDatabase</span>
+<span class="comment">//@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ContactRepositoryTest</span> {
+
+    <span class="annotation">@Autowired</span>
+    ContactRepository contactRepository;
+
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> findAllByLastName_filtersByLastName() {
+
+        <span class="predefined-type">String</span> lastName = <span class="string"><span class="delimiter">&quot;</span><span class="content">Solheim</span><span class="delimiter">&quot;</span></span>;
+        <span class="predefined-type">List</span>&lt;Contact&gt; byLastName = contactRepository.findAllByLastName(lastName);
+
+        assertThat(byLastName.size()).isEqualTo(<span class="integer">2</span>);
+        assertThat(byLastName).allMatch((it) -&gt; it.getLastName().equals(lastName));
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_controller_test">Controller test</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Vise Controller test uten mocking med (1L som param)</p>
+</li>
+<li>
+<p>Vise @MockBean for ContactRepository</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demowebjpa</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.assertj.core.api.Assertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.mockito.BDDMockito.given</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.Optional</span>;
+
+<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
+<span class="keyword">import</span> <span class="include">org.junit.runner.RunWith</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.annotation.Autowired</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.boot.test.context.SpringBootTest</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.boot.test.mock.mockito.MockBean</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.http.HttpStatus</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.http.ResponseEntity</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.test.context.junit4.SpringRunner</span>;
+
+<span class="annotation">@RunWith</span>(SpringRunner.class)
+<span class="annotation">@SpringBootTest</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ContactControllerTest</span> {
+
+    <span class="annotation">@Autowired</span>
+    ContactController contactController;
+
+    <span class="annotation">@MockBean</span>
+    ContactRepository contactRepository;
+
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> returnsStatusCodeNotFoundForNonexistingContacts() {
+
+        ResponseEntity&lt;Contact&gt; contact = contactController.getContact(<span class="integer">1L</span>);
+
+        assertThat(contact.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> returnsStatusCodeOkForExistingContacts() {
+
+        given(contactRepository.findById(<span class="integer">1L</span>)).willReturn(Optional.of(<span class="keyword">new</span> Contact()));
+        ResponseEntity&lt;Contact&gt; contact = contactController.getContact(<span class="integer">1L</span>);
+
+        assertThat(contact.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_webmvc_test">WebMvc test</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>To test whether Spring MVC controllers are working as expected, use the @WebMvcTest annotation. @WebMvcTest auto-configures the Spring MVC infrastructure and limits scanned beans to @Controller, @ControllerAdvice, @JsonComponent, Converter, GenericConverter, Filter, WebMvcConfigurer, and HandlerMethodArgumentResolver. Regular @Component beans are not scanned when using this annotation.</p>
+</li>
+<li>
+<p>Vise @WebMvcTest(ContactController.class)</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demowebjpa</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.CoreMatchers.is</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.mockito.ArgumentMatchers.eq</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.mockito.ArgumentMatchers.isNotNull</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.mockito.BDDMockito.given</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.springframework.test.web.servlet.result.MockMvcResultMatchers.status</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.Optional</span>;
+
+<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
+<span class="keyword">import</span> <span class="include">org.junit.runner.RunWith</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.annotation.Autowired</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.boot.test.mock.mockito.MockBean</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.http.MediaType</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.test.context.junit4.SpringRunner</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.test.web.servlet.MockMvc</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.test.web.servlet.MvcResult</span>;
+
+<span class="annotation">@RunWith</span>(SpringRunner.class)
+<span class="annotation">@WebMvcTest</span>(ContactController.class)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ContactEndpointTest</span> {
+
+    <span class="annotation">@Autowired</span>
+    MockMvc mvc;
+
+    <span class="annotation">@MockBean</span>
+    ContactRepository contactRepository;
+
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> contactResponseContainsExpectedFields() <span class="directive">throws</span> <span class="exception">Exception</span> {
+
+        Contact contact = <span class="keyword">new</span> Contact() {{
+            id = <span class="integer">1L</span>;
+            firstName = <span class="string"><span class="delimiter">&quot;</span><span class="content">Bent</span><span class="delimiter">&quot;</span></span>;
+            lastName = <span class="string"><span class="delimiter">&quot;</span><span class="content">Solheim</span><span class="delimiter">&quot;</span></span>;
+            email = <span class="string"><span class="delimiter">&quot;</span><span class="content">bent@example.com</span><span class="delimiter">&quot;</span></span>;
+        }};
+
+        given(contactRepository.findById(<span class="integer">1L</span>)).willReturn(Optional.of(contact));
+
+        MvcResult result = mvc.perform(get(<span class="string"><span class="delimiter">&quot;</span><span class="content">/contact/1</span><span class="delimiter">&quot;</span></span>).accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath(<span class="string"><span class="delimiter">&quot;</span><span class="content">$.id</span><span class="delimiter">&quot;</span></span>, is(contact.getId().intValue())))
+            .andExpect(jsonPath(<span class="string"><span class="delimiter">&quot;</span><span class="content">$.firstName</span><span class="delimiter">&quot;</span></span>, is(contact.getFirstName())))
+            .andExpect(jsonPath(<span class="string"><span class="delimiter">&quot;</span><span class="content">$.lastName</span><span class="delimiter">&quot;</span></span>, is(contact.getLastName())))
+            .andExpect(jsonPath(<span class="string"><span class="delimiter">&quot;</span><span class="content">$.email</span><span class="delimiter">&quot;</span></span>, is(contact.getEmail())))
+            .andReturn();
+
+        <span class="predefined-type">System</span>.out.println(result.getResponse().getContentAsString());
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_restclient">RestClient</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Vise @RestClientTest</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demowebjpa</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">java.lang.String.format</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.assertj.core.api.Assertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.springframework.http.MediaType.APPLICATION_JSON</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.Map</span>;
+
+<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
+<span class="keyword">import</span> <span class="include">org.junit.runner.RunWith</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.annotation.Autowired</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.boot.test.autoconfigure.web.client.RestClientTest</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.core.io.ClassPathResource</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.test.context.junit4.SpringRunner</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.test.web.client.MockRestServiceServer</span>;
+
+<span class="annotation">@RunWith</span>(SpringRunner.class)
+<span class="annotation">@RestClientTest</span>({ ExternalServiceController.class, ApplicationConfiguration.class })
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ExternalServiceControllerTest</span> {
+
+    <span class="annotation">@Autowired</span>
+    ExternalServiceController externalServiceController;
+
+    <span class="annotation">@Autowired</span>
+    <span class="directive">private</span> MockRestServiceServer server;
+
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> verifyForwardsHttpbinResponse() {
+
+        <span class="local-variable">this</span>.server.expect(requestTo(<span class="string"><span class="delimiter">&quot;</span><span class="content">https://httpbin.org/anything/test</span><span class="delimiter">&quot;</span></span>))
+            .andRespond(withSuccess(<span class="keyword">new</span> ClassPathResource(<span class="string"><span class="delimiter">&quot;</span><span class="content">com/example/demowebdb/echo_response.json</span><span class="delimiter">&quot;</span></span>), APPLICATION_JSON));
+
+        <span class="predefined-type">Map</span> response = externalServiceController.echo(<span class="string"><span class="delimiter">&quot;</span><span class="content">test</span><span class="delimiter">&quot;</span></span>);
+        assertThat(response.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span>)).isEqualTo(<span class="string"><span class="delimiter">&quot;</span><span class="content">https://httpbin.org/anything/test</span><span class="delimiter">&quot;</span></span>);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>echo_response.json</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>{
+  "args": {},
+  "data": "",
+  "files": {},
+  "form": {},
+  "headers": {
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Accept-Language": "en-US,en;q=0.9,nb;q=0.8",
+    "Connection": "close",
+    "Cookie": "_gauges_unique_month=1; _gauges_unique_year=1; _gauges_unique=1",
+    "Host": "httpbin.org",
+    "Upgrade-Insecure-Requests": "1",
+    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.167 Safari/537.36"
+  },
+  "json": null,
+  "method": "GET",
+  "origin": "151.187.161.3",
+  "url": "https://httpbin.org/anything/HEPP"
+}</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_actuator">Actuator</h2>
 <div class="sectionbody">
 <div class="ulist">
@@ -1739,91 +2097,10 @@ http://localhost:8080/actuator/httptrace</pre>
 }</code></pre>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_metrics">Metrics</h2>
-<div class="sectionbody">
 <div class="ulist">
 <ul>
 <li>
-<p>Instrumentering; hvor lang er responstidene dine? Hvordan har de utviklet seg? Hvor mye minne brukes? CPU?</p>
-<div class="literalblock">
-<div class="content">
-<pre>http://localhost:8080/actuator/metrics/
-http://localhost:8080/actuator/metrics/jvm.memory.used</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Lage custom metrics:</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>package com.example.demowebjpa;
-
-import static java.util.Collections.singletonList;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import io.micrometer.core.instrument.ImmutableTag;
-import io.micrometer.core.instrument.MeterRegistry;
-
-@RestController
-@RequestMapping("/calc")
-public class CalculatorController {
-
-    public static final String METRIC_NAME = "calc.add";
-
-    private MeterRegistry meterRegistry;
-
-    public CalculatorController(MeterRegistry meterRegistry) {
-        this.meterRegistry = meterRegistry;
-    }
-
-    @GetMapping("/add")
-    public int add(@RequestParam int a, @RequestParam int b) {
-
-        incrementCounter(a);
-        incrementCounter(b);
-
-        return a + b;
-    }
-
-    private void incrementCounter(int number) {
-        meterRegistry.counter(METRIC_NAME, singletonList(new ImmutableTag("number", Integer.toString(number))))
-            .increment();
-    }
-}</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Kalle opp eget endepunkt:</p>
-<div class="literalblock">
-<div class="content">
-<pre>http ":8080/calc/add?a=3&amp;b=5"
-http ":8080/calc/add?a=3&amp;b=6"</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Sjekke custom metrics:</p>
-<div class="literalblock">
-<div class="content">
-<pre>http://localhost:8080/actuator/metrics/
-http://localhost:8080/actuator/metrics/calc.add</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Enable prometheus:</p>
+<p>Legge på prometheus metrikker</p>
 </li>
 </ul>
 </div>
@@ -1835,395 +2112,6 @@ http://localhost:8080/actuator/metrics/calc.add</pre>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
-<div class="literalblock">
-<div class="content">
-<pre>http://localhost:8080/actuator/prometheus</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Skru på histogrammer for distribusjon</p>
-<div class="literalblock">
-<div class="content">
-<pre>management.metrics.distribution.percentiles-histogram.http=true</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>http://localhost:8080/actuator/prometheus</pre>
-</div>
-</div>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demowebjpa</span>;
-
-<span class="keyword">import</span> <span class="include">java.time.Duration</span>;
-
-<span class="keyword">import</span> <span class="include">org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.context.annotation.Bean</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.context.annotation.Configuration</span>;
-
-<span class="keyword">import</span> <span class="include">io.micrometer.core.instrument.MeterRegistry</span>;
-<span class="keyword">import</span> <span class="include">io.micrometer.core.instrument.config.MeterFilter</span>;
-
-<span class="annotation">@Configuration</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">MetricsConfig</span> {
-
-    <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="type">int</span> MIN_MILLIS = <span class="integer">30</span>;
-    <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="type">int</span> MAX_SECONDS = <span class="integer">2</span>;
-
-    <span class="annotation">@Bean</span>
-    MeterRegistryCustomizer&lt;MeterRegistry&gt; metricsCustomizer() {
-        <span class="keyword">return</span> registry -&gt; registry.config()
-            .meterFilter(MeterFilter.minExpected(<span class="string"><span class="delimiter">&quot;</span><span class="content">http</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">Duration</span>.ofMillis(MIN_MILLIS)))
-            .meterFilter(MeterFilter.maxExpected(<span class="string"><span class="delimiter">&quot;</span><span class="content">http</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">Duration</span>.ofSeconds(MAX_SECONDS)));
-    }
-}</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Utgående httpforespørseler via RestTemplate</p>
-</li>
-<li>
-<p>Vi må unngå High cardinality metrics</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demowebjpa</span>;
-
-<span class="keyword">import</span> <span class="include">org.springframework.boot.web.client.RestTemplateBuilder</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.context.annotation.Bean</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.context.annotation.Configuration</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.web.client.RestTemplate</span>;
-
-<span class="annotation">@Configuration</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">ApplicationConfiguration</span> {
-
-    <span class="annotation">@Bean</span>
-    RestTemplate restTemplate(RestTemplateBuilder builder) {
-        <span class="keyword">return</span> builder.build();
-    }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demowebjpa</span>;
-
-<span class="keyword">import</span> <span class="include">java.util.Map</span>;
-
-<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.GetMapping</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.PathVariable</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RequestMapping</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RestController</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.web.client.RestTemplate</span>;
-
-<span class="annotation">@RestController</span>
-<span class="annotation">@RequestMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/external</span><span class="delimiter">&quot;</span></span>)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">ExternalServiceController</span> {
-
-    <span class="directive">private</span> RestTemplate restTemplate;
-
-    <span class="directive">public</span> ExternalServiceController(RestTemplate restTemplate) {
-        <span class="local-variable">this</span>.restTemplate = restTemplate;
-    }
-
-    <span class="annotation">@GetMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/echo1/{param}</span><span class="delimiter">&quot;</span></span>)
-    <span class="directive">public</span> <span class="predefined-type">Map</span> echo(<span class="annotation">@PathVariable</span> <span class="predefined-type">String</span> param) {
-
-        <span class="keyword">return</span> restTemplate.getForEntity(<span class="string"><span class="delimiter">&quot;</span><span class="content">https://httpbin.org/anything/</span><span class="delimiter">&quot;</span></span> + param, <span class="predefined-type">Map</span>.class).getBody();
-    }
-
-    <span class="annotation">@GetMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/echo2/{param}</span><span class="delimiter">&quot;</span></span>)
-    <span class="directive">public</span> <span class="predefined-type">Map</span> echo2(<span class="annotation">@PathVariable</span> <span class="predefined-type">String</span> param) {
-
-        <span class="keyword">return</span> restTemplate.getForEntity(<span class="string"><span class="delimiter">&quot;</span><span class="content">https://httpbin.org/anything/{0}</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">Map</span>.class, param).getBody();
-    }
-}</code></pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>http://localhost:8080/external/echo1/test1
-http://localhost:8080/external/echo1/test2
-http://localhost:8080/external/echo2/test1
-http://localhost:8080/external/echo2/test2</pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_testing">Testing</h2>
-<div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p>Nevne at det kan være greit å ikke bruke spring til testing</p>
-</li>
-<li>
-<p>Vise @SpringBootTest</p>
-</li>
-<li>
-<p>Vise hvordan man kan @Autowire inn objekter i testen.</p>
-</li>
-<li>
-<p>Databasetest: Legge til h2 og vise at applikasjonen starter opp med in-memory database automatisk. Demonstrere at @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE) kan brukes til å påvirke dette.</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demowebjpa</span>;
-
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.assertj.core.api.Assertions.assertThat</span>;
-
-<span class="keyword">import</span> <span class="include">java.util.List</span>;
-
-<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
-<span class="keyword">import</span> <span class="include">org.junit.runner.RunWith</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.annotation.Autowired</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.boot.test.context.SpringBootTest</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.test.context.junit4.SpringRunner</span>;
-
-<span class="annotation">@RunWith</span>(SpringRunner.class)
-<span class="annotation">@SpringBootTest</span>
-<span class="annotation">@AutoConfigureTestDatabase</span>
-<span class="comment">//@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">ContactRepositoryTest</span> {
-
-    <span class="annotation">@Autowired</span>
-    ContactRepository contactRepository;
-
-    <span class="annotation">@Test</span>
-    <span class="directive">public</span> <span class="type">void</span> findAllByLastName_filtersByLastName() {
-
-        <span class="predefined-type">String</span> lastName = <span class="string"><span class="delimiter">&quot;</span><span class="content">Solheim</span><span class="delimiter">&quot;</span></span>;
-        <span class="predefined-type">List</span>&lt;Contact&gt; byLastName = contactRepository.findAllByLastName(lastName);
-
-        assertThat(byLastName.size()).isEqualTo(<span class="integer">2</span>);
-        assertThat(byLastName).allMatch((it) -&gt; it.getLastName().equals(lastName));
-    }
-}</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Vise Controller test uten mocking med (1L som param)</p>
-</li>
-<li>
-<p>Vise @MockBean for ContactRepository</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demowebjpa</span>;
-
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.assertj.core.api.Assertions.assertThat</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.mockito.BDDMockito.given</span>;
-
-<span class="keyword">import</span> <span class="include">java.util.Optional</span>;
-
-<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
-<span class="keyword">import</span> <span class="include">org.junit.runner.RunWith</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.annotation.Autowired</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.boot.test.context.SpringBootTest</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.boot.test.mock.mockito.MockBean</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.http.HttpStatus</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.http.ResponseEntity</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.test.context.junit4.SpringRunner</span>;
-
-<span class="annotation">@RunWith</span>(SpringRunner.class)
-<span class="annotation">@SpringBootTest</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">ContactControllerTest</span> {
-
-    <span class="annotation">@Autowired</span>
-    ContactController contactController;
-
-    <span class="annotation">@MockBean</span>
-    ContactRepository contactRepository;
-
-    <span class="annotation">@Test</span>
-    <span class="directive">public</span> <span class="type">void</span> returnsStatusCodeNotFoundForNonexistingContacts() {
-
-        ResponseEntity&lt;Contact&gt; contact = contactController.getContact(<span class="integer">1L</span>);
-
-        assertThat(contact.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    }
-
-    <span class="annotation">@Test</span>
-    <span class="directive">public</span> <span class="type">void</span> returnsStatusCodeOkForExistingContacts() {
-
-        given(contactRepository.findById(<span class="integer">1L</span>)).willReturn(Optional.of(<span class="keyword">new</span> Contact()));
-        ResponseEntity&lt;Contact&gt; contact = contactController.getContact(<span class="integer">1L</span>);
-
-        assertThat(contact.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-}</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>To test whether Spring MVC controllers are working as expected, use the @WebMvcTest annotation. @WebMvcTest auto-configures the Spring MVC infrastructure and limits scanned beans to @Controller, @ControllerAdvice, @JsonComponent, Converter, GenericConverter, Filter, WebMvcConfigurer, and HandlerMethodArgumentResolver. Regular @Component beans are not scanned when using this annotation.</p>
-</li>
-<li>
-<p>Vise @WebMvcTest(ContactController.class)</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demowebjpa</span>;
-
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.CoreMatchers.is</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.mockito.ArgumentMatchers.eq</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.mockito.ArgumentMatchers.isNotNull</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.mockito.BDDMockito.given</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.springframework.test.web.servlet.result.MockMvcResultMatchers.status</span>;
-
-<span class="keyword">import</span> <span class="include">java.util.Optional</span>;
-
-<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
-<span class="keyword">import</span> <span class="include">org.junit.runner.RunWith</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.annotation.Autowired</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.boot.test.mock.mockito.MockBean</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.http.MediaType</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.test.context.junit4.SpringRunner</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.test.web.servlet.MockMvc</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.test.web.servlet.MvcResult</span>;
-
-<span class="annotation">@RunWith</span>(SpringRunner.class)
-<span class="annotation">@WebMvcTest</span>(ContactController.class)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">ContactEndpointTest</span> {
-
-    <span class="annotation">@Autowired</span>
-    MockMvc mvc;
-
-    <span class="annotation">@MockBean</span>
-    ContactRepository contactRepository;
-
-    <span class="annotation">@Test</span>
-    <span class="directive">public</span> <span class="type">void</span> contactResponseContainsExpectedFields() <span class="directive">throws</span> <span class="exception">Exception</span> {
-
-        Contact contact = <span class="keyword">new</span> Contact() {{
-            id = <span class="integer">1L</span>;
-            firstName = <span class="string"><span class="delimiter">&quot;</span><span class="content">Bent</span><span class="delimiter">&quot;</span></span>;
-            lastName = <span class="string"><span class="delimiter">&quot;</span><span class="content">Solheim</span><span class="delimiter">&quot;</span></span>;
-            email = <span class="string"><span class="delimiter">&quot;</span><span class="content">bent@example.com</span><span class="delimiter">&quot;</span></span>;
-        }};
-
-        given(contactRepository.findById(<span class="integer">1L</span>)).willReturn(Optional.of(contact));
-
-        MvcResult result = mvc.perform(get(<span class="string"><span class="delimiter">&quot;</span><span class="content">/contact/1</span><span class="delimiter">&quot;</span></span>).accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath(<span class="string"><span class="delimiter">&quot;</span><span class="content">$.id</span><span class="delimiter">&quot;</span></span>, is(contact.getId().intValue())))
-            .andExpect(jsonPath(<span class="string"><span class="delimiter">&quot;</span><span class="content">$.firstName</span><span class="delimiter">&quot;</span></span>, is(contact.getFirstName())))
-            .andExpect(jsonPath(<span class="string"><span class="delimiter">&quot;</span><span class="content">$.lastName</span><span class="delimiter">&quot;</span></span>, is(contact.getLastName())))
-            .andExpect(jsonPath(<span class="string"><span class="delimiter">&quot;</span><span class="content">$.email</span><span class="delimiter">&quot;</span></span>, is(contact.getEmail())))
-            .andReturn();
-
-        <span class="predefined-type">System</span>.out.println(result.getResponse().getContentAsString());
-    }
-}</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Vise @RestClientTest</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demowebjpa</span>;
-
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">java.lang.String.format</span>;
-
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.assertj.core.api.Assertions.assertThat</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.springframework.http.MediaType.APPLICATION_JSON</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess</span>;
-
-<span class="keyword">import</span> <span class="include">java.util.Map</span>;
-
-<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
-<span class="keyword">import</span> <span class="include">org.junit.runner.RunWith</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.annotation.Autowired</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.boot.test.autoconfigure.web.client.RestClientTest</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.core.io.ClassPathResource</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.test.context.junit4.SpringRunner</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.test.web.client.MockRestServiceServer</span>;
-
-<span class="annotation">@RunWith</span>(SpringRunner.class)
-<span class="annotation">@RestClientTest</span>({ ExternalServiceController.class, ApplicationConfiguration.class })
-<span class="directive">public</span> <span class="type">class</span> <span class="class">ExternalServiceControllerTest</span> {
-
-    <span class="annotation">@Autowired</span>
-    ExternalServiceController externalServiceController;
-
-    <span class="annotation">@Autowired</span>
-    <span class="directive">private</span> MockRestServiceServer server;
-
-    <span class="annotation">@Test</span>
-    <span class="directive">public</span> <span class="type">void</span> verifyForwardsHttpbinResponse() {
-
-        <span class="local-variable">this</span>.server.expect(requestTo(<span class="string"><span class="delimiter">&quot;</span><span class="content">https://httpbin.org/anything/test</span><span class="delimiter">&quot;</span></span>))
-            .andRespond(withSuccess(<span class="keyword">new</span> ClassPathResource(<span class="string"><span class="delimiter">&quot;</span><span class="content">com/example/demowebdb/echo_response.json</span><span class="delimiter">&quot;</span></span>), APPLICATION_JSON));
-
-        <span class="predefined-type">Map</span> response = externalServiceController.echo(<span class="string"><span class="delimiter">&quot;</span><span class="content">test</span><span class="delimiter">&quot;</span></span>);
-        assertThat(response.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span>)).isEqualTo(<span class="string"><span class="delimiter">&quot;</span><span class="content">https://httpbin.org/anything/test</span><span class="delimiter">&quot;</span></span>);
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>echo_response.json</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>{
-  "args": {},
-  "data": "",
-  "files": {},
-  "form": {},
-  "headers": {
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-    "Accept-Encoding": "gzip, deflate, br",
-    "Accept-Language": "en-US,en;q=0.9,nb;q=0.8",
-    "Connection": "close",
-    "Cookie": "_gauges_unique_month=1; _gauges_unique_year=1; _gauges_unique=1",
-    "Host": "httpbin.org",
-    "Upgrade-Insecure-Requests": "1",
-    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.167 Safari/537.36"
-  },
-  "json": null,
-  "method": "GET",
-  "origin": "151.187.161.3",
-  "url": "https://httpbin.org/anything/HEPP"
-}</pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_developer_tools">Developer tools</h2>
-<div class="sectionbody">
-
 </div>
 </div>
 <div class="sect1">
@@ -2244,59 +2132,10 @@ http://localhost:8080/external/echo2/test2</pre>
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="_referanseapplikasjonen">Referanseapplikasjonen</h2>
-<div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p>Tilrettelagt for deploy mot openshift</p>
-<div class="literalblock">
-<div class="content">
-<pre>git clone https://github.com/Skatteetaten/openshift-reference-springboot-server.git
-cd openshift-reference-springboot-server</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Mye detaljer som må inspiseres på egenhånd eller dekkes i andre kurs</p>
-</li>
-<li>
-<p>Vise README.md</p>
-<div class="ulist">
-<ul>
-<li>
-<p>Kommentere spesielt "How to use"</p>
-</li>
-<li>
-<p>RestDoc som et alternativ til Swagger</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>vise pom.xml</p>
-<div class="ulist">
-<ul>
-<li>
-<p>Kommentere Rest Doc: <a href="http://referanse-paas-bas-dev.utv.paas.skead.no/docs/index.html" class="bare">http://referanse-paas-bas-dev.utv.paas.skead.no/docs/index.html</a></p>
-<div class="literalblock">
-<div class="content">
-<pre>mvn clean package</pre>
-</div>
-</div>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-</div>
-</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-05-24 10:05:52 CEST
+Last updated 2019-04-09 14:21:11 CEST
 </div>
 </div>
 </body>
