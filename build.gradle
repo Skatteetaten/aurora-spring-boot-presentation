@@ -1,6 +1,6 @@
 plugins {
-  id 'org.ajoberstar.git-publish' version '0.4.1'
-  id 'org.ajoberstar.grgit' version '2.2.0'
+  id 'org.ajoberstar.git-publish' version '2.1.1'
+  id 'org.ajoberstar.grgit' version '3.1.1'
 }
 
 gitPublish {
