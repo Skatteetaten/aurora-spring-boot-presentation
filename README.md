@@ -16,9 +16,10 @@ Manuskriptet for presentasjonen ligger under "notes" og er skrevet med asciidoc.
 
 Dokumentasjonen kan republiseres med
 
-  ./gradlew gitPublishPush
+    ./gradlew gitPublishPush
   
-Det fordrer at dokumentasjonen er ferdig bygget auth er satt opp riktig via miljøvariablene GRGIT_USER og GRGIT_PASS.
+Det fordrer at dokumentasjonen er ferdig bygget og auth er satt opp riktig via miljøvariablene GRGIT_USER og GRGIT_PASS.
 
-  export GRGIT_USER=...
-  export GRGIT_PASS=(cat ~/.github_pass) # fish shell
+    export GRGIT_USER=...
+    export GRGIT_PASS=(cat ~/.github_pass) # fish shell
+    export GRGIT_PASS=$(cat ~/.github_pass) # sh
