@@ -47,18 +47,19 @@
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
     <!-- end::dep-actuator[] -->
+    <!-- tag::dep-prometheus[] -->
     <dependency>
       <groupId>io.micrometer</groupId>
       <artifactId>micrometer-registry-prometheus</artifactId>
     </dependency>
+    <!-- end::dep-prometheus[] -->
     <dependency>
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.oracle</groupId>
-      <artifactId>ojdbc7</artifactId>
-      <version>12.1.0.2.p19158500</version>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
     </dependency>
 
     <dependency>
@@ -66,16 +67,20 @@
       <artifactId>spring-boot-devtools</artifactId>
       <scope>runtime</scope>
     </dependency>
+    <!-- tag::dep-test[] -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- end::dep-test[] -->
+    <!-- tag::dep-h2[] -->
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- end::dep-h2[] -->
   </dependencies>
 
   <build>

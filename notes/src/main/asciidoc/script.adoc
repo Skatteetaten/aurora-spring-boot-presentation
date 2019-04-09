@@ -207,11 +207,15 @@ include::{examples}/demo-webcache/pom.xml[tag=dep-redis,indent=0]
 
 == JDBC
 * start.spring.io (web, jdbc)
+* starte postgres via Docker:
+
+  docker run --rm --name postgres -e POSTGRES_PASSWORD=123dev -d -p 5432:5432 postgres
+
 * Koble til db i IntelliJ
 * Legge inn noe testdata:
 [source,sql]
 ----
-include::{examples}/demo-webjdbc/src/main/resources/db/migration/V20180409203000__create_contact_table.sql[]
+include::{examples}/demo-webjdbc/src/main/resources/db/migration/V201803021300__create_contact_table_with_data.sql[]
 ----
 
 * Legge på JDBC driver
@@ -264,14 +268,38 @@ include::{examples}/demo-webjpa/src/main/java/com/example/demowebjpa/ContactCont
 == Testing ==
 
 * Nevne at det kan være greit å ikke bruke spring til testing
+[source,xml]
+----
+include::{examples}/demo-webjpa/pom.xml[tag=dep-test,indent=0]
+----
 * Vise @SpringBootTest
 * Vise hvordan man kan @Autowire inn objekter i testen.
 * Databasetest: Legge til h2 og vise at applikasjonen starter opp med in-memory database automatisk. Demonstrere at @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE) kan brukes til å påvirke dette.
+[source,xml]
+----
+include::{examples}/demo-webjpa/pom.xml[tag=dep-h2,indent=0]
+----
+
+* Redusere logging
+** I src/test/resources/logback.xml
+[source,xml]
+----
+include::{examples}/demo-webjpa/src/test/resources/logback.xml[]
+----
+** I /src/test/resources/application.properties
+[source]
+----
+include::{examples}/demo-webjpa/src/test/resources/application.properties[]
+----
+
+=== Repository test
 
 [source,java]
 ----
 include::{examples}/demo-webjpa/src/test/java/com/example/demowebjpa/ContactRepositoryTest.java[]
 ----
+
+=== Controller test
 
 * Vise Controller test uten mocking med (1L som param)
 * Vise @MockBean for ContactRepository
@@ -281,6 +309,8 @@ include::{examples}/demo-webjpa/src/test/java/com/example/demowebjpa/ContactRepo
 include::{examples}/demo-webjpa/src/test/java/com/example/demowebjpa/ContactControllerTest.java[]
 ----
 
+=== WebMvc test
+
 * To test whether Spring MVC controllers are working as expected, use the @WebMvcTest annotation. @WebMvcTest auto-configures the Spring MVC infrastructure and limits scanned beans to @Controller, @ControllerAdvice, @JsonComponent, Converter, GenericConverter, Filter, WebMvcConfigurer, and HandlerMethodArgumentResolver. Regular @Component beans are not scanned when using this annotation.
 
 * Vise @WebMvcTest(ContactController.class)
@@ -289,6 +319,8 @@ include::{examples}/demo-webjpa/src/test/java/com/example/demowebjpa/ContactCont
 ----
 include::{examples}/demo-webjpa/src/test/java/com/example/demowebjpa/ContactEndpointTest.java[]
 ----
+
+=== RestClient
 
 * Vise @RestClientTest
 
@@ -385,6 +417,13 @@ include::{examples}/demo-webjpa/pom.xml[tag=plugin-git,indent=0]
 [source,java]
 ----
 include::{examples}/demo-webjpa/src/main/java/com/example/demowebjpa/SchemaVersionHealthIndicator.java[]
+----
+
+* Legge på prometheus metrikker
+
+[source,xml]
+----
+include::{examples}/demo-webjpa/pom.xml[tag=dep-prometheus,indent=0]
 ----
 
 == Honourable mentions ==

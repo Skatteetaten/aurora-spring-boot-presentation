@@ -2,6 +2,7 @@ build_
 secrets.txt
 target/
 !.mvn/wrapper/maven-wrapper.jar
+app.log
 
 ### STS ###
 .apt_generated

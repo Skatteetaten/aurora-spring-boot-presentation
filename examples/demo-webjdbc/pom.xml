@@ -38,11 +38,10 @@
 		</dependency>
 		<!-- end::dep-flyway[] -->
 		<!-- tag::dep-jdbc[] -->
-		<dependency>
-		  <groupId>com.oracle</groupId>
-		  <artifactId>ojdbc7</artifactId>
-		  <version>12.1.0.2.p19158500</version>
-		</dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+    </dependency>
 		<!-- end::dep-jdbc[] -->
 
 		<dependency>

@@ -49,7 +49,7 @@ class ContactService {
     }
 
     public void createContact(Contact c) {
-        jdbcTemplate.update("insert into CONTACT (FIRST_NAME, LASTNAME, EMAIL) values (?, ?, ?)", c.firstName, c.lastName, c.email);
+        jdbcTemplate.update("insert into CONTACT (FIRST_NAME, LAST_NAME, EMAIL) values (?, ?, ?)", c.firstName, c.lastName, c.email);
     }
 }
 
