@@ -206,7 +206,6 @@ include::{examples}/demo-webcache/pom.xml[tag=dep-redis,indent=0]
 
 
 == JDBC
-* start.spring.io (web, jdbc)
 * starte postgres via Docker:
 
   docker run --rm --name postgres -e POSTGRES_PASSWORD=123dev -d -p 5432:5432 postgres
@@ -217,7 +216,13 @@ include::{examples}/demo-webcache/pom.xml[tag=dep-redis,indent=0]
 ----
 include::{examples}/demo-webjdbc/src/main/resources/db/migration/V201803021300__create_contact_table_with_data.sql[]
 ----
-
+* Skriv initiell kodestruktur med controller og service (uten JdbcTemplate)
+* Legg på starter jdbc
+[source,java]
+----
+include::{examples}/demo-webjdbc/pom.xml[tag=dep-sb-jdbc,indent=0]
+----
+* Skriv initiell kode med JdbcTemplate og start applikasjonen. Kommenter feilene.
 * Legge på JDBC driver
 [source,java]
 ----
@@ -228,7 +233,7 @@ include::{examples}/demo-webjdbc/pom.xml[tag=dep-jdbc,indent=0]
 ----
 include::{examples}/demo-webjdbc/src/main/resources/application.properties[]
 ----
-
+* Fullfør kodeeksempel
 [source,java]
 ----
 include::{examples}/demo-webjdbc/src/main/java/com/example/demowebjdbc/ContactController.java[]
@@ -257,6 +262,12 @@ include::{examples}/demo-webjdbc/pom.xml[tag=dep-flyway,indent=0]
 [source,xml]
 ----
 include::{examples}/demo-webjpa/pom.xml[tag=dep-jpa,indent=0]
+----
+
+* Sett property for å unngå feilmelding i loggen
+[source]
+----
+spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
 ----
 
 [source,java]

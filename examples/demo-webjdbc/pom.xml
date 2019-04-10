@@ -23,10 +23,12 @@
 	</properties>
 
 	<dependencies>
+		<!-- tag::dep-sb-jdbc[] -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
+		<!-- end::dep-sb-jdbc[] -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
