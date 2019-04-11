@@ -848,6 +848,9 @@ http --verbose :8080 Accept:text/html</pre>
 <li>
 <p>Gå gjennom basic hello world &#8594; request param &#8594; json response &#8594; date property (ISO 8601)</p>
 </li>
+<li>
+<p>Husk å fjerne CommandLineRunner.</p>
+</li>
 </ul>
 </div>
 </li>
@@ -1280,9 +1283,6 @@ get &lt;key&gt;</pre>
 <div class="ulist">
 <ul>
 <li>
-<p>start.spring.io (web, jdbc)</p>
-</li>
-<li>
 <p>starte postgres via Docker:</p>
 <div class="literalblock">
 <div class="content">
@@ -1314,6 +1314,27 @@ insert INTO contact (first_name, last_name, email) VALUES ('Bent', 'Solheim', 'B
 <div class="ulist">
 <ul>
 <li>
+<p>Skriv initiell kodestruktur med controller og service (uten JdbcTemplate)</p>
+</li>
+<li>
+<p>Legg på starter jdbc</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>&lt;dependency&gt;
+	&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-boot-starter-jdbc&lt;/artifactId&gt;
+&lt;/dependency&gt;</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Skriv initiell kode med JdbcTemplate og start applikasjonen. Kommenter feilene.</p>
+</li>
+<li>
 <p>Legge på JDBC driver</p>
 </li>
 </ul>
@@ -1340,101 +1361,108 @@ spring.datasource.username: postgres
 spring.datasource.password: 123dev</pre>
 </div>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>Fullfør kodeeksempel</p>
+</li>
+</ul>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demowebjdbc</span>;
+<pre>package com.example.demowebjdbc;
 
-<span class="keyword">import</span> <span class="include">java.util.List</span>;
+import java.util.List;
 
-<span class="keyword">import</span> <span class="include">org.springframework.jdbc.core.BeanPropertyRowMapper</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.jdbc.core.JdbcTemplate</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.stereotype.Service</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.GetMapping</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.PostMapping</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RequestBody</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RequestMapping</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RestController</span>;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-<span class="annotation">@RestController</span>
-<span class="annotation">@RequestMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/contact</span><span class="delimiter">&quot;</span></span>)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">ContactController</span> {
+@RestController
+@RequestMapping("/contact")
+public class ContactController {
 
-    <span class="directive">private</span> ContactService contactService;
+    private ContactService contactService;
 
-    <span class="directive">public</span> ContactController(ContactService contactService) {
-        <span class="local-variable">this</span>.contactService = contactService;
+    public ContactController(ContactService contactService) {
+        this.contactService = contactService;
     }
 
-    <span class="annotation">@GetMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/</span><span class="delimiter">&quot;</span></span>)
-    <span class="directive">public</span> <span class="predefined-type">List</span>&lt;Contact&gt; getAll() {
+    @GetMapping("/")
+    public List&lt;Contact&gt; getAll() {
 
-        <span class="keyword">return</span> contactService.findAllContacts();
+        return contactService.findAllContacts();
     }
 
-    <span class="annotation">@PostMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/</span><span class="delimiter">&quot;</span></span>)
-    <span class="type">void</span> postContact(<span class="annotation">@RequestBody</span> Contact contact) {
+    @PostMapping("/")
+    void postContact(@RequestBody Contact contact) {
 
         contactService.createContact(contact);
     }
 }
 
-<span class="annotation">@Service</span>
-<span class="type">class</span> <span class="class">ContactService</span> {
+@Service
+class ContactService {
 
-    <span class="directive">private</span> JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
-    <span class="directive">public</span> ContactService(JdbcTemplate jdbcTemplate) {
-        <span class="local-variable">this</span>.jdbcTemplate = jdbcTemplate;
+    public ContactService(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-    <span class="predefined-type">List</span>&lt;Contact&gt; findAllContacts() {
+    List&lt;Contact&gt; findAllContacts() {
 
-        <span class="keyword">return</span> jdbcTemplate.query(<span class="string"><span class="delimiter">&quot;</span><span class="content">select * from CONTACT</span><span class="delimiter">&quot;</span></span>, <span class="keyword">new</span> BeanPropertyRowMapper&lt;&gt;(Contact.class));
+        return jdbcTemplate.query("select * from CONTACT", new BeanPropertyRowMapper&lt;&gt;(Contact.class));
     }
 
-    <span class="directive">public</span> <span class="type">void</span> createContact(Contact c) {
-        jdbcTemplate.update(<span class="string"><span class="delimiter">&quot;</span><span class="content">insert into CONTACT (FIRST_NAME, LAST_NAME, EMAIL) values (?, ?, ?)</span><span class="delimiter">&quot;</span></span>, c.firstName, c.lastName, c.email);
+    public void createContact(Contact c) {
+        jdbcTemplate.update("insert into CONTACT (FIRST_NAME, LAST_NAME, EMAIL) values (?, ?, ?)", c.firstName, c.lastName, c.email);
     }
 }
 
-<span class="type">class</span> <span class="class">Contact</span> {
-    <span class="predefined-type">Long</span> id;
-    <span class="predefined-type">String</span> firstName;
-    <span class="predefined-type">String</span> lastName;
-    <span class="predefined-type">String</span> email;
+class Contact {
+    Long id;
+    String firstName;
+    String lastName;
+    String email;
 
-    <span class="directive">public</span> <span class="predefined-type">Long</span> getId() {
-        <span class="keyword">return</span> id;
+    public Long getId() {
+        return id;
     }
 
-    <span class="directive">public</span> <span class="type">void</span> setId(<span class="predefined-type">Long</span> id) {
-        <span class="local-variable">this</span>.id = id;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    <span class="directive">public</span> <span class="predefined-type">String</span> getFirstName() {
-        <span class="keyword">return</span> firstName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    <span class="directive">public</span> <span class="type">void</span> setFirstName(<span class="predefined-type">String</span> firstName) {
-        <span class="local-variable">this</span>.firstName = firstName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    <span class="directive">public</span> <span class="predefined-type">String</span> getLastName() {
-        <span class="keyword">return</span> lastName;
+    public String getLastName() {
+        return lastName;
     }
 
-    <span class="directive">public</span> <span class="type">void</span> setLastName(<span class="predefined-type">String</span> lastName) {
-        <span class="local-variable">this</span>.lastName = lastName;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    <span class="directive">public</span> <span class="predefined-type">String</span> getEmail() {
-        <span class="keyword">return</span> email;
+    public String getEmail() {
+        return email;
     }
 
-    <span class="directive">public</span> <span class="type">void</span> setEmail(<span class="predefined-type">String</span> email) {
-        <span class="local-variable">this</span>.email = email;
+    public void setEmail(String email) {
+        this.email = email;
     }
-}</code></pre>
+}</pre>
 </div>
 </div>
 <div class="literalblock">
@@ -1494,6 +1522,18 @@ http ":8080/contact/" firstName=Espen lastName=Strømland email=Espen.Stromland@
   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
   &lt;artifactId&gt;spring-boot-starter-data-jpa&lt;/artifactId&gt;
 &lt;/dependency&gt;</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Sett property for å unngå feilmelding i loggen</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true</pre>
 </div>
 </div>
 <div class="listingblock">
@@ -2147,7 +2187,7 @@ http://localhost:8080/actuator/httptrace</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-04-10 09:33:34 CEST
+Last updated 2019-04-11 08:45:32 CEST
 </div>
 </div>
 </body>
