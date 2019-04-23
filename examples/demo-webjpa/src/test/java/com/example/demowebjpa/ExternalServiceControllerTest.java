@@ -31,7 +31,7 @@ public class ExternalServiceControllerTest {
     public void verifyForwardsHttpbinResponse() {
 
         this.server.expect(requestTo("https://httpbin.org/anything/test"))
-            .andRespond(withSuccess(new ClassPathResource("com/example/demowebdb/echo_response.json"), APPLICATION_JSON));
+            .andRespond(withSuccess(new ClassPathResource("com/example/demowebjpa/echo_response.json"), APPLICATION_JSON));
 
         Map response = externalServiceController.echo("test");
         assertThat(response.get("url")).isEqualTo("https://httpbin.org/anything/test");
