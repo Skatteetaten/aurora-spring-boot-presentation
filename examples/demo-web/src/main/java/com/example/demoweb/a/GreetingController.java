@@ -1,14 +1,15 @@
-package com.example.demoweb;
+package com.example.demoweb.a;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class HelloWorld {
-    @GetMapping("/hello")
-    @ResponseBody
-    public String hello() {
-        return "Hello world";
+public class GreetingController {
+
+    @GetMapping("/greet")
+    public @ResponseBody
+    String greet() {
+        return "Hello, world";
     }
 }
