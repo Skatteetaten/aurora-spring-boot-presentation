@@ -187,7 +187,7 @@ include::{examples}/demo-webcache/pom.xml[tag=dep-cache,indent=0]
 ----
 [source,java]
 ----
-include::{examples}/demo-webcache/src/main/java/com/example/demowebcache/DemoWebcacheApplication.java[]
+include::{examples}/demo-webcache/src/main/java/com/example/demowebcache/ApplicationConfiguration.java[tag=cache-config,indent=0]
 ----
 
 [source,java]
@@ -206,10 +206,19 @@ include::{examples}/demo-webcache/src/main/java/com/example/demowebcache/Greetin
 include::{examples}/demo-webcache/pom.xml[tag=dep-redis,indent=0]
 ----
 
+* Husk at GreetingResponse må implementere Serializable
+
   docker run -p 6379:6379 --rm --name redis redis
   docker run -it --link redis:redis --rm redis redis-cli -h redis -p 6379
   keys *
   get <key>
+
+* Konfigurere redis til å serialisere som JSON:
+
+[source,java]
+----
+include::{examples}/demo-webcache/src/main/java/com/example/demowebcache/ApplicationConfiguration.java[tag=cache-config-json,indent=0]
+----
 
 
 == JDBC
