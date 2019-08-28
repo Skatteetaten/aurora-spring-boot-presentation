@@ -1,4 +1,5 @@
 :examples: ../../../../examples
+
 = Introduksjon til Spring Boot, notater
 
 == Hva er Spring Boot?
@@ -86,11 +87,14 @@ include::{examples}/demo-simple/src/main/java/com/example/demo/GreetingService.j
 ** Konfigurerer logging basert på innholdet på classpathen. Defaulten er logback og kommer med spring-boot-starter.
 ** Konfigurere logging (logging.level.com.example.demo = DEBUG)
 
+[source,yaml,indent=0]
+----
   logging:
     level:
       com:
         example:
           demo: INFO
+----
 
 ** Vise fra kommandolinje:
 
@@ -100,7 +104,6 @@ include::{examples}/demo-simple/src/main/java/com/example/demo/GreetingService.j
 
   export LOGGING_LEVEL_COM_EXAMPLE_DEMO=DEBUG
   java -jar  target/demo-0.0.1-SNAPSHOT.jar
-
 
 == Spring MVC
 * Man deployet tidligere applikasjoner som war filer i en servlet container
@@ -201,6 +204,7 @@ include::{examples}/demo-webcache/src/main/java/com/example/demowebcache/Greetin
 
 * Påpek problem med at cachen forsvinner etter restart og problem med multiple instanser
 * Ta inn redis i pom.xml
+
 [source,xml]
 ----
 include::{examples}/demo-webcache/pom.xml[tag=dep-redis,indent=0]
@@ -208,10 +212,13 @@ include::{examples}/demo-webcache/pom.xml[tag=dep-redis,indent=0]
 
 * Husk at GreetingResponse må implementere Serializable
 
+[source,bash]
+----
   docker run -p 6379:6379 --rm --name redis redis
   docker run -it --link redis:redis --rm redis redis-cli -h redis -p 6379
   keys *
   get <key>
+----
 
 * Konfigurere redis til å serialisere som JSON:
 
@@ -361,7 +368,7 @@ include::{examples}/demo-webjpa/src/test/resources/application.properties[]
 
 [source,sql]
 ----
-include::{examples}/demo-webjpa/src/test/resources/db/migration/V201803122037__add_some_test_data.sql[]
+include::{examples}/demo-webjpa/src/test/resources/db/migration/V201908281302__add_some_test_data.sql[]
 ----
 
 
@@ -396,6 +403,7 @@ include::{examples}/demo-webjpa/src/test/java/com/example/demowebjpa/ContactEndp
 === RestClient
 
 * Vise @RestClientTest
+* Flytt cache config ut i egen fil. Cache er ikke med i ApplicationsContexten ved @RestClientTest
 
 [source,java]
 ----
@@ -479,7 +487,16 @@ include::{examples}/demo-webjpa/pom.xml[tag=plugin-git,indent=0]
   http://localhost:8080/actuator/flyway
   http://localhost:8080/actuator/httptrace
 
-* Skru på logging
+* Vise loggers endepunkt:
+
+    http://localhost:8080/actuator/loggers
+    http://localhost:8080/actuator/loggers/com.example.demo
+
+* Legg på logging på noe kode (DEBUG). Vis at dette ikke kommer i logg. Skru på DEBUG runtime;
+
+    http --verbose "http://localhost:8080/actuator/loggers/com.example.demo" configuredLevel=DEBUG
+
+* Skru på fil-logging
 
   logging.file=app.log
 
