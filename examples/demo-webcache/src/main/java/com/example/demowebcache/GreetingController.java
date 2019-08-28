@@ -1,5 +1,11 @@
 package com.example.demowebcache;
 
+import java.time.LocalDateTime;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -7,11 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import java.io.Serializable;
-import java.time.Instant;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 @RestController
 public class GreetingController {
@@ -28,53 +33,52 @@ public class GreetingController {
 
         Thread.sleep(3000);
         GreetingResponse response = new GreetingResponse();
-        response.greeting = greetingService.getGreeting(name);
+        response.setGreeting(greetingService.getGreeting(name));
         return response;
     }
-
 
     @RequestMapping("/greeter")
     @CacheEvict(cacheNames = "greeting", allEntries = true)
     public void updateGreeter(@Valid @RequestBody UpdateGreeterPayload payload) {
 
-        this.greetingService.setGreeter(payload.greeter);
+        this.greetingService.setGreeter(payload.name);
     }
 }
 
-class GreetingResponse implements Serializable {
+class GreetingResponse /* implements Serializable */ {
 
-    String greeting;
+    private String greeting;
 
-    Instant createdAt = Instant.now();
-
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     public String getGreeting() {
-
         return greeting;
     }
 
+    public void setGreeting(String greeting) {
+        this.greeting = greeting;
+    }
 
-    public Instant getCreatedAt() {
-
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 }
 
 class UpdateGreeterPayload {
 
-    String greeter;
-
+    String name;
 
     @NotNull
     @Pattern(regexp = "[A-z\\s]+")
-    public String getGreeter() {
+    public String getName() {
 
-        return greeter;
+        return name;
     }
 
+    public void setName(String name) {
 
-    public void setGreeter(String greeter) {
-
-        this.greeter = greeter;
+        this.name = name;
     }
 }

@@ -9,6 +9,12 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.Instant;
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 @RestController
 public class GreetingController {
@@ -23,7 +29,7 @@ public class GreetingController {
     public GreetingResponse hello(@RequestParam(required = false) String name) {
 
         GreetingResponse response = new GreetingResponse();
-        response.greeting = greetingService.getGreeting(name);
+        response.setGreeting(greetingService.getGreeting(name));
         return response;
     }
 
@@ -37,19 +43,19 @@ public class GreetingController {
 
 class GreetingResponse {
 
-    String greeting;
+    private String greeting;
 
-    Instant createdAt = Instant.now();
-
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     public String getGreeting() {
-
         return greeting;
     }
 
+    public void setGreeting(String greeting) {
+        this.greeting = greeting;
+    }
 
-    public Instant getCreatedAt() {
-
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 }
