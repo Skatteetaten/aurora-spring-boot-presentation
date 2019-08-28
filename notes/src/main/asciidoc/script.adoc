@@ -364,7 +364,7 @@ include::{examples}/demo-webjpa/src/test/resources/logback.xml[]
 include::{examples}/demo-webjpa/src/test/resources/application.properties[]
 ----
 
-* Vis testspesifikk testdata:
+* Vis testspesifikk testdata `/src/test/resources/db/migration/V201908281302__add_some_test_data.sql`:
 
 [source,sql]
 ----
@@ -386,7 +386,7 @@ include::{examples}/demo-webjpa/src/test/java/com/example/demowebjpa/ContactRepo
 
 [source,java]
 ----
-include::{examples}/demo-webjpa/src/test/java/com/example/demowebjpa/ContactControllerTest.java[]
+include::{examples}/demo-webjpa/src/test/java/com/example/demowebjpa/ContactServiceTest.java[]
 ----
 
 === WebMvc test
@@ -397,7 +397,7 @@ include::{examples}/demo-webjpa/src/test/java/com/example/demowebjpa/ContactCont
 
 [source,java]
 ----
-include::{examples}/demo-webjpa/src/test/java/com/example/demowebjpa/ContactEndpointTest.java[]
+include::{examples}/demo-webjpa/src/test/java/com/example/demowebjpa/ContactControllerTest.java[]
 ----
 
 === RestClient
