@@ -228,28 +228,35 @@ include::{examples}/demo-webcache/src/main/java/com/example/demowebcache/Applica
 
 * Koble til db i IntelliJ
 * Legge inn noe testdata:
+
 [source,sql]
 ----
-include::{examples}/demo-webjdbc/src/main/resources/db/migration/V201803021300__create_contact_table_with_data.sql[]
+include::{examples}/demo-webjdbc/src/main/resources/db/migration/V201908281301__add_data.sql[]
 ----
+
 * Skriv initiell kodestruktur med controller og service (uten JdbcTemplate)
 * Legg på starter jdbc
-[source,java]
+
+[source,xml]
 ----
 include::{examples}/demo-webjdbc/pom.xml[tag=dep-sb-jdbc,indent=0]
 ----
+
 * Skriv initiell kode med JdbcTemplate og start applikasjonen. Kommenter feilene.
 * Legge på JDBC driver
-[source,java]
+
+[source,xml]
 ----
 include::{examples}/demo-webjdbc/pom.xml[tag=dep-jdbc,indent=0]
 ----
+
 * Legg inn config i application.properties
 [source]
 ----
-include::{examples}/demo-webjdbc/src/main/resources/application.properties[]
+include::{examples}/demo-webjdbc/src/main/resources/application.yml[]
 ----
 * Fullfør kodeeksempel
+
 [source,java]
 ----
 include::{examples}/demo-webjdbc/src/main/java/com/example/demowebjdbc/ContactController.java[]
@@ -262,19 +269,36 @@ include::{examples}/demo-webjdbc/src/main/java/com/example/demowebjdbc/ContactCo
 == Migreringer
 * Migrations; legg på avhengighet i pom.xml
 
-[source,java]
+[source,xml]
 ----
 include::{examples}/demo-webjdbc/pom.xml[tag=dep-flyway,indent=0]
 ----
 
-* Slett gamle tabeller
-* Lag migrering i src/main/resources/db/migration/V201803021300__create_contact_table_with_data.sql
+* Opprett folder `src/main/resources/db/migration/`
+* Lag migreringer
+** V201908281300__create_contact_table.sql
 
+[source,sql]
+----
+include::{examples}/demo-webjdbc/src/main/resources/db/migration/V201908281300__create_contact_table.sql[]
+----
+
+** V201908281301__add_data.sql
+
+[source,sql]
+----
+include::{examples}/demo-webjdbc/src/main/resources/db/migration/V201908281301__add_data.sql[]
+----
+
+* Vis hva som skjer dersom man kjører flyway med eksisterende tabell (feiler)
+* Slett gamle tabeller
 * Vis flyway_schema_history
+* Vis hva som skjer dersom man endrer på en eksisterende migrering.
 
 
 == JPA
 * Legg på avhengighet
+
 [source,xml]
 ----
 include::{examples}/demo-webjpa/pom.xml[tag=dep-jpa,indent=0]
@@ -286,6 +310,12 @@ include::{examples}/demo-webjpa/pom.xml[tag=dep-jpa,indent=0]
 spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
 ----
 
+* Gjør Contact om til @Entity
+* Lag ContactRepository (extends JpaRepository<Contact, Integer>)
+* Lag @GetMapping("/{id}")
+* Lag @GetMapping("/") List<Contact> getAllContacts(@RequestParam(required = false) String lastName)
+* Vis varianter med `findAllByLastNameContains` og `findAllByLastName`.
+
 [source,java]
 ----
 include::{examples}/demo-webjpa/src/main/java/com/example/demowebjpa/ContactController.java[]
@@ -295,13 +325,19 @@ include::{examples}/demo-webjpa/src/main/java/com/example/demowebjpa/ContactCont
 == Testing ==
 
 * Nevne at det kan være greit å ikke bruke spring til testing
+
 [source,xml]
 ----
 include::{examples}/demo-webjpa/pom.xml[tag=dep-test,indent=0]
 ----
+
+* Begynne med ContactRepositoryTest
 * Vise @SpringBootTest
 * Vise hvordan man kan @Autowire inn objekter i testen.
+* Kjøre først uten @AutoConfigureTestDatabase.
 * Databasetest: Legge til h2 og vise at applikasjonen starter opp med in-memory database automatisk. Demonstrere at @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE) kan brukes til å påvirke dette.
+* Endre test til å bruke `@DataJpaTest` istedenfor `@SpringBootTest`.
+
 [source,xml]
 ----
 include::{examples}/demo-webjpa/pom.xml[tag=dep-h2,indent=0]
@@ -309,15 +345,25 @@ include::{examples}/demo-webjpa/pom.xml[tag=dep-h2,indent=0]
 
 * Redusere logging
 ** I src/test/resources/logback.xml
+
 [source,xml]
 ----
 include::{examples}/demo-webjpa/src/test/resources/logback.xml[]
 ----
+
 ** I /src/test/resources/application.properties
 [source]
 ----
 include::{examples}/demo-webjpa/src/test/resources/application.properties[]
 ----
+
+* Vis testspesifikk testdata:
+
+[source,sql]
+----
+include::{examples}/demo-webjpa/src/test/resources/db/migration/V201803122037__add_some_test_data.sql[]
+----
+
 
 === Repository test
 

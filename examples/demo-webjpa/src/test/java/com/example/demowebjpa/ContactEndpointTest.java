@@ -34,17 +34,17 @@ public class ContactEndpointTest {
     public void contactResponseContainsExpectedFields() throws Exception {
 
         Contact contact = new Contact() {{
-            id = 1L;
+            id = 1;
             firstName = "Bent";
             lastName = "Solheim";
             email = "bent@example.com";
         }};
 
-        given(contactRepository.findById(1L)).willReturn(Optional.of(contact));
+        given(contactRepository.findById(1)).willReturn(Optional.of(contact));
 
         MvcResult result = mvc.perform(get("/contact/1").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id", is(contact.getId().intValue())))
+            .andExpect(jsonPath("$.id", is(contact.getId())))
             .andExpect(jsonPath("$.firstName", is(contact.getFirstName())))
             .andExpect(jsonPath("$.lastName", is(contact.getLastName())))
             .andExpect(jsonPath("$.email", is(contact.getEmail())))

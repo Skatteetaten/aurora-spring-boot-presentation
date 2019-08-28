@@ -27,7 +27,7 @@ public class ContactControllerTest {
     @Test
     public void returnsStatusCodeNotFoundForNonexistingContacts() {
 
-        ResponseEntity<Contact> contact = contactController.getContact(1L);
+        ResponseEntity<Contact> contact = contactController.getContact(1);
 
         assertThat(contact.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
@@ -35,8 +35,8 @@ public class ContactControllerTest {
     @Test
     public void returnsStatusCodeOkForExistingContacts() {
 
-        given(contactRepository.findById(1L)).willReturn(Optional.of(new Contact()));
-        ResponseEntity<Contact> contact = contactController.getContact(1L);
+        given(contactRepository.findById(1)).willReturn(Optional.of(new Contact()));
+        ResponseEntity<Contact> contact = contactController.getContact(1);
 
         assertThat(contact.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
