@@ -22,9 +22,9 @@ public class GreetingController {
         this.greetingService = greetingService;
     }
 
-    @RequestMapping("/hello")
-    @Cacheable("hello")
-    public GreetingResponse hello(@RequestParam(required = false) String name) throws InterruptedException {
+    @RequestMapping("/greet")
+    @Cacheable("greeting")
+    public GreetingResponse greet(@RequestParam(required = false) String name) throws InterruptedException {
 
         Thread.sleep(3000);
         GreetingResponse response = new GreetingResponse();
@@ -34,7 +34,7 @@ public class GreetingController {
 
 
     @RequestMapping("/greeter")
-    @CacheEvict(cacheNames = "hello", allEntries = true)
+    @CacheEvict(cacheNames = "greeting", allEntries = true)
     public void updateGreeter(@Valid @RequestBody UpdateGreeterPayload payload) {
 
         this.greetingService.setGreeter(payload.greeter);

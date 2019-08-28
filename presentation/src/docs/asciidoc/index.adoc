@@ -45,6 +45,13 @@ Bent André Solheim, Aurora OpenShift
 
 [source,xml]
 ----
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>X.Y.Z.RELEASE</version>
+    <relativePath/>
+</parent>
+
 <dependencies>
     <dependency>
         <groupId>org.springframework.boot</groupId>
@@ -93,7 +100,7 @@ Studere en minimal Spring Boot applikasjon
 
 == Webapp (HTTP-API)
 * spring-boot-starter-web
-** Spring MVC (tilsvarer JAX-RS)
+** Spring MVC (tilsvarer JAX-RS (+Jersey))
 ** Tomcat
 ** Jackson
 ** javax.validation (hibernate-validator)

@@ -22,8 +22,8 @@ Auto-configuration er ikke-inasiv. Du kan når som helst definere din egen konfi
 * Åpne i IntelliJ og vis hva vi har fått
 ** Slette tester
 ** pom.xml med spring boot plugin og avhengighet
-** maven plugin, nevne at vi får byggeoppsett derfra.
-** parent, vise at vi får versjoner derfra.
+** maven plugin, nevne at vi får byggeoppsett derfra (self contained jar) + kjøre applikasjon in-place.
+** parent, vise at vi får pluginkonfigurasjon og versjoner derfra.
 * Se på dependencies
 * Kjør fra kommandolinje;
 
@@ -43,6 +43,7 @@ Auto-configuration er ikke-inasiv. Du kan når som helst definere din egen konfi
 ** Vise field injection, setter-injection og constructor injection.
 
 * Konfigurasjon
+** Nevne at Spring Boot er veldig god på å håndtere konfigurasjon og eksternalisert konfigurasjon.
 ** Konfigurere applikasjon
 ** application.properties
 ** Konfigurere spring (spring.main.banner-mode=off)
@@ -94,16 +95,10 @@ include::{examples}/demo-simple/src/main/java/com/example/demo/GreetingService.j
 
   java -jar -Dlogging.level.com.example.demo=DEBUG target/demo-0.0.1-SNAPSHOT.jar
 
-** Vis at det ikke går via miljøvariabel, samt vise alternativ løsning.
+** Vis at dette også går via miljøvariabel.
 
-  log:
-    demo: DEBUG
-
-  logging:
-    level:
-      com:
-        example:
-          demo: ${log.demo}
+  export LOGGING_LEVEL_COM_EXAMPLE_DEMO=DEBUG
+  java -jar  target/demo-0.0.1-SNAPSHOT.jar
 
 
 == Spring MVC
@@ -132,7 +127,12 @@ include::{examples}/demo-simple/src/main/java/com/example/demo/GreetingService.j
 
 [source,java]
 ----
-include::{examples}/demo-web/src/main/java/com/example/demoweb/HelloWorld.java[]
+include::{examples}/demo-web/src/main/java/com/example/demoweb/a/GreetingController.java[]
+----
+
+[source,java]
+----
+include::{examples}/demo-web/src/main/java/com/example/demoweb/b/GreetingController.java[]
 ----
 
 ** Post @RequestBody Map -> UpdateGreeterPayload -> @Valid med @NotNull og @Pattern(regexp = "[A-z\\s]+")
@@ -152,6 +152,8 @@ include::{examples}/demo-web/src/main/java/com/example/demoweb/GreetingService.j
 ----
 
 ** Generell error handling
+** Vis først feilhåndtering ved IllegalArgumentException fra egen kode
+** Vis deretter hvordan man kan override feilmeldinger fra javax.validation feil.
 
     echo '{}' | http --verbose ":8080/greeter"
 
@@ -161,6 +163,11 @@ include::{examples}/demo-web/src/main/java/com/example/demoweb/ErrorHandler.java
 ----
 
 ** Kalle ekstern tjeneste
+** Forklare at vi skal bruke httpbin som eksempel. Online verktøy med ulike utilities for http.
+** Vise https://httpbin.org i nettleseren og vise /anything-endepunktet.
+** Forklare hvordan @Configuration beans skiller seg fra @Component og @Controller
+
+
 [source,java]
 ----
 include::{examples}/demo-web/src/main/java/com/example/demoweb/ExternalServiceController.java[]
@@ -180,7 +187,7 @@ include::{examples}/demo-webcache/pom.xml[tag=dep-cache,indent=0]
 ----
 [source,java]
 ----
-include::{examples}/demo-webcache/src/main/java/com/example/demowebcache/DemoWebcacheApplication.java[]
+include::{examples}/demo-webcache/src/main/java/com/example/demowebcache/ApplicationConfiguration.java[tag=cache-config,indent=0]
 ----
 
 [source,java]
@@ -199,10 +206,19 @@ include::{examples}/demo-webcache/src/main/java/com/example/demowebcache/Greetin
 include::{examples}/demo-webcache/pom.xml[tag=dep-redis,indent=0]
 ----
 
+* Husk at GreetingResponse må implementere Serializable
+
   docker run -p 6379:6379 --rm --name redis redis
   docker run -it --link redis:redis --rm redis redis-cli -h redis -p 6379
   keys *
   get <key>
+
+* Konfigurere redis til å serialisere som JSON:
+
+[source,java]
+----
+include::{examples}/demo-webcache/src/main/java/com/example/demowebcache/ApplicationConfiguration.java[tag=cache-config-json,indent=0]
+----
 
 
 == JDBC
