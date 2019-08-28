@@ -1,6 +1,6 @@
 package com.example.demoweb.b;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +26,7 @@ class GreetingResponse {
 
     private String greeting;
 
-    private Instant createdAt = Instant.now();
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     public String getGreeting() {
         return greeting;
@@ -36,7 +36,7 @@ class GreetingResponse {
         this.greeting = greeting;
     }
 
-    public Instant getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 }
