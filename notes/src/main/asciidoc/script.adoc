@@ -1,3 +1,4 @@
+:examples: ../../../../examples
 = Introduksjon til Spring Boot, notater
 
 == Hva er Spring Boot?
@@ -107,7 +108,6 @@ include::{examples}/demo-simple/src/main/java/com/example/demo/GreetingService.j
 
 == Webapplikasjon
 
-* start.sping.io med web (ta bort tester)
 * vise avhengigheter (kommentere jackson, hibernate-validator, tomcat og spring-webmvc)
 * Kjør
 
