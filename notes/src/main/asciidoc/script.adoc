@@ -184,10 +184,12 @@ include::{examples}/demo-web/src/main/java/com/example/demoweb/ApplicationConfig
 
 == Caching
 * Legg på
+
 [source,xml]
 ----
 include::{examples}/demo-webcache/pom.xml[tag=dep-cache,indent=0]
 ----
+
 [source,java]
 ----
 include::{examples}/demo-webcache/src/main/java/com/example/demowebcache/ApplicationConfiguration.java[tag=cache-config,indent=0]
@@ -220,7 +222,9 @@ include::{examples}/demo-webcache/pom.xml[tag=dep-redis,indent=0]
   get <key>
 ----
 
-* Konfigurere redis til å serialisere som JSON:
+* Konfigurere redis til å serialisere som JSON (ApplicationConfiguration)
+* Husk også `@JsonSerialize(using = LocalDateTimeSerializer.class)` og `@JsonDeserialize(using = LocalDateTimeDeserializer.class)` på createdAt.
+
 
 [source,java]
 ----
