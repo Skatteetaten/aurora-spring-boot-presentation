@@ -92,7 +92,14 @@ table.CodeRay td.code>pre{padding:0}
 <section id="forutsetninger"><h2>Forutsetninger</h2><div class="ulist"><ul><li><p>Forstå grunnleggende begreper som DI (Dependency Injection), Classpath scanning, Application Lifecycle.</p></li><li><p>Forståelse av virkemåten og oppbygningen til tradisjonelle java webapplikasjoner (.war, servlet container).</p></li><li><p>Maven, JDBC, JPA, Cache, ReST, JSON, Hibernate, DataSource, JUnit, Mockito, Slf4j, Logback</p></li></ul></div></section>
 <section id="hva-dekkes-ikke"><h2>Hva dekkes ikke?</h2><div class="ulist"><ul><li><p>JAX-RS + Jersey</p></li><li><p>WebFlux</p></li><li><p>Spring Security</p></li></ul></div></section>
 <section id="hva-er-spring-boot"><h2>Hva er Spring Boot?</h2><div class="ulist"><ul><li><p>Bootstraprammeverk</p></li><li><p>Konvensjoner</p></li><li><p>Autoconfiguration fra classpath (non-invasive)</p></li><li><p>Forskjellige startere</p></li></ul></div></section>
-<section id="pom-xml"><h2>pom.xml</h2><div class="listingblock"><div class="content"><pre class="CodeRay"><code class="xml language-xml"><span class="tag">&lt;dependencies&gt;</span>
+<section id="pom-xml"><h2>pom.xml</h2><div class="listingblock"><div class="content"><pre class="CodeRay"><code class="xml language-xml"><span class="tag">&lt;parent&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;version&gt;</span>X.Y.Z.RELEASE<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;relativePath</span><span class="tag">/&gt;</span>
+<span class="tag">&lt;/parent&gt;</span>
+
+<span class="tag">&lt;dependencies&gt;</span>
     <span class="tag">&lt;dependency&gt;</span>
         <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
         <span class="tag">&lt;artifactId&gt;</span>spring-boot-starter<span class="tag">&lt;/artifactId&gt;</span>
@@ -118,7 +125,7 @@ table.CodeRay td.code>pre{padding:0}
 <section id="demo"><h2>Demo</h2><div class="paragraph"><p>Studere en minimal Spring Boot applikasjon</p></div>
 <div class="ulist"><ul><li><p>Classpath scanning</p></li><li><p>Dependency Injection</p></li><li><p>Konfigurasjon (relaxed binding)</p></li><li><p>Logging</p></li></ul></div></section>
 <section id="basics-oppsummering"><h2>Basics, oppsummering</h2><div class="ulist"><ul><li><p>Classpath scanning for automatisk Dependency Injection</p></li><li><p>Konfigurasjon; defaults, profiler og overrides</p></li><li><p>SLF4J og LogBack</p></li></ul></div></section>
-<section id="webapp-http-api"><h2>Webapp (HTTP-API)</h2><div class="ulist"><ul><li><p>spring-boot-starter-web</p><div class="ulist"><ul><li><p>Spring MVC (tilsvarer JAX-RS)</p></li><li><p>Tomcat</p></li><li><p>Jackson</p></li><li><p>javax.validation (hibernate-validator)</p></li></ul></div></li><li><p>maven</p><div class="ulist"><ul><li><p>executable jar med embedded servlet container</p></li></ul></div></li></ul></div></section>
+<section id="webapp-http-api"><h2>Webapp (HTTP-API)</h2><div class="ulist"><ul><li><p>spring-boot-starter-web</p><div class="ulist"><ul><li><p>Spring MVC (tilsvarer JAX-RS (+Jersey))</p></li><li><p>Tomcat</p></li><li><p>Jackson</p></li><li><p>javax.validation (hibernate-validator)</p></li></ul></div></li><li><p>maven</p><div class="ulist"><ul><li><p>executable jar med embedded servlet container</p></li></ul></div></li></ul></div></section>
 <section id="spring-mvc"><h2>Spring MVC</h2><div class="ulist"><ul><li><p>Bygget på Servletstacken</p></li><li><p>Vært i Spring "siden starten"</p></li><li><p>Bygget opp rundt DispatcherServlet (tar imot alle forespørseler)</p></li><li><p>Controllere annoteres i forhold til http path og method (GET, POST&#8230;&#8203;)</p></li><li><p>(Finnes siden Spring 5 også et reactive alternativ; Spring WebFlux)</p></li></ul></div></section>
 <section id="demo-2"><h2>Demo</h2><div class="ulist"><ul><li><p>Enkelt "ReST"-API (@Controller og @RestController)</p></li><li><p>GET med request parameters (@GetMapping)</p></li><li><p>Json response</p></li><li><p>POST, deserialisering av payload + validering (@PostMapping, @Valid)</p></li><li><p>Feilhåndtering (@ControllerAdvice)</p></li><li><p>RestTemplate + @Configuration/@Bean</p></li></ul></div></section>
 <section id="web-oppsummering"><h2>Web, oppsummering</h2><div class="ulist"><ul><li><p>Embedded servlet container (tomcat)</p></li><li><p>Ferdigkonfigurert med javax.validation og Jackson</p></li><li><p>Bruker Spring MVC som default</p></li><li><p>Content Negotiation, feilhåndtering</p></li></ul></div></section>

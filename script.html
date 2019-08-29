@@ -557,10 +557,10 @@ Database; spring-boot-starter-jdbc, springavhengigheter + datasourceimplementasj
 <p>pom.xml med spring boot plugin og avhengighet</p>
 </li>
 <li>
-<p>maven plugin, nevne at vi får byggeoppsett derfra.</p>
+<p>maven plugin, nevne at vi får byggeoppsett derfra (self contained jar) + kjøre applikasjon in-place.</p>
 </li>
 <li>
-<p>parent, vise at vi får versjoner derfra.</p>
+<p>parent, vise at vi får pluginkonfigurasjon og versjoner derfra.</p>
 </li>
 </ul>
 </div>
@@ -613,6 +613,9 @@ java -jar target/demo-0.0.1-SNAPSHOT.jar</pre>
 <p>Konfigurasjon</p>
 <div class="ulist">
 <ul>
+<li>
+<p>Nevne at Spring Boot er veldig god på å håndtere konfigurasjon og eksternalisert konfigurasjon.</p>
+</li>
 <li>
 <p>Konfigurere applikasjon</p>
 </li>
@@ -757,20 +760,11 @@ java -jar target/demo-0.0.1-SNAPSHOT.jar</pre>
 </div>
 </li>
 <li>
-<p>Vis at det ikke går via miljøvariabel, samt vise alternativ løsning.</p>
+<p>Vis at dette også går via miljøvariabel.</p>
 <div class="literalblock">
 <div class="content">
-<pre>log:
-  demo: DEBUG</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>logging:
-  level:
-    com:
-      example:
-        demo: ${log.demo}</pre>
+<pre>export LOGGING_LEVEL_COM_EXAMPLE_DEMO=DEBUG
+java -jar  target/demo-0.0.1-SNAPSHOT.jar</pre>
 </div>
 </div>
 </li>
@@ -799,20 +793,8 @@ java -jar target/demo-0.0.1-SNAPSHOT.jar</pre>
 <div class="ulist">
 <ul>
 <li>
-<p>Legg til avhengighet i pom.xml</p>
+<p>start.sping.io med web (ta bort tester)</p>
 </li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>&lt;dependency&gt;
-	&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-	&lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
-&lt;/dependency&gt;</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
 <li>
 <p>vise avhengigheter (kommentere jackson, hibernate-validator, tomcat og spring-webmvc)</p>
 </li>
@@ -848,9 +830,6 @@ http --verbose :8080 Accept:text/html</pre>
 <li>
 <p>Gå gjennom basic hello world &#8594; request param &#8594; json response &#8594; date property (ISO 8601)</p>
 </li>
-<li>
-<p>Husk å fjerne CommandLineRunner.</p>
-</li>
 </ul>
 </div>
 </li>
@@ -858,18 +837,65 @@ http --verbose :8080 Accept:text/html</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demoweb</span>;
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demoweb.a</span>;
 
 <span class="keyword">import</span> <span class="include">org.springframework.stereotype.Controller</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.GetMapping</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.ResponseBody</span>;
 
 <span class="annotation">@Controller</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">HelloWorld</span> {
-    <span class="annotation">@GetMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/hello</span><span class="delimiter">&quot;</span></span>)
-    <span class="annotation">@ResponseBody</span>
-    <span class="directive">public</span> <span class="predefined-type">String</span> hello() {
-        <span class="keyword">return</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello world</span><span class="delimiter">&quot;</span></span>;
+<span class="directive">public</span> <span class="type">class</span> <span class="class">GreetingController</span> {
+
+    <span class="annotation">@GetMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/greet</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">public</span> <span class="annotation">@ResponseBody</span>
+    <span class="predefined-type">String</span> greet() {
+        <span class="keyword">return</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello, world</span><span class="delimiter">&quot;</span></span>;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demoweb.b</span>;
+
+<span class="keyword">import</span> <span class="include">java.time.LocalDateTime</span>;
+
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.GetMapping</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RestController</span>;
+
+<span class="annotation">@RestController</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">GreetingController</span> {
+
+    <span class="directive">private</span> GreetingService greetingService;
+
+    <span class="directive">public</span> GreetingController(GreetingService greetingService) {
+        <span class="local-variable">this</span>.greetingService = greetingService;
+    }
+
+    <span class="annotation">@GetMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/greet</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">public</span> GreetingResponse greet() {
+        GreetingResponse response = <span class="keyword">new</span> GreetingResponse();
+        response.setGreeting(greetingService.getGreeting());
+        <span class="keyword">return</span> response;
+    }
+}
+
+<span class="type">class</span> <span class="class">GreetingResponse</span> {
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> greeting;
+
+    <span class="directive">private</span> LocalDateTime createdAt = LocalDateTime.now();
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> getGreeting() {
+        <span class="keyword">return</span> greeting;
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> setGreeting(<span class="predefined-type">String</span> greeting) {
+        <span class="local-variable">this</span>.greeting = greeting;
+    }
+
+    <span class="directive">public</span> LocalDateTime getCreatedAt() {
+        <span class="keyword">return</span> createdAt;
     }
 }</code></pre>
 </div>
@@ -901,6 +927,12 @@ echo '{}' | http --verbose ":8080/greeter"</pre>
 <span class="keyword">import</span> <span class="include">javax.validation.constraints.NotNull</span>;
 <span class="keyword">import</span> <span class="include">javax.validation.constraints.Pattern</span>;
 <span class="keyword">import</span> <span class="include">java.time.Instant</span>;
+<span class="keyword">import</span> <span class="include">java.time.LocalDateTime</span>;
+
+<span class="keyword">import</span> <span class="include">com.fasterxml.jackson.databind.annotation.JsonDeserialize</span>;
+<span class="keyword">import</span> <span class="include">com.fasterxml.jackson.databind.annotation.JsonSerialize</span>;
+<span class="keyword">import</span> <span class="include">com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer</span>;
+<span class="keyword">import</span> <span class="include">com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer</span>;
 
 <span class="annotation">@RestController</span>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">GreetingController</span> {
@@ -915,7 +947,7 @@ echo '{}' | http --verbose ":8080/greeter"</pre>
     <span class="directive">public</span> GreetingResponse hello(<span class="annotation">@RequestParam</span>(required = <span class="predefined-constant">false</span>) <span class="predefined-type">String</span> name) {
 
         GreetingResponse response = <span class="keyword">new</span> GreetingResponse();
-        response.greeting = greetingService.getGreeting(name);
+        response.setGreeting(greetingService.getGreeting(name));
         <span class="keyword">return</span> response;
     }
 
@@ -929,19 +961,19 @@ echo '{}' | http --verbose ":8080/greeter"</pre>
 
 <span class="type">class</span> <span class="class">GreetingResponse</span> {
 
-    <span class="predefined-type">String</span> greeting;
+    <span class="directive">private</span> <span class="predefined-type">String</span> greeting;
 
-    Instant createdAt = Instant.now();
-
+    <span class="directive">private</span> LocalDateTime createdAt = LocalDateTime.now();
 
     <span class="directive">public</span> <span class="predefined-type">String</span> getGreeting() {
-
         <span class="keyword">return</span> greeting;
     }
 
+    <span class="directive">public</span> <span class="type">void</span> setGreeting(<span class="predefined-type">String</span> greeting) {
+        <span class="local-variable">this</span>.greeting = greeting;
+    }
 
-    <span class="directive">public</span> Instant getCreatedAt() {
-
+    <span class="directive">public</span> LocalDateTime getCreatedAt() {
         <span class="keyword">return</span> createdAt;
     }
 }
@@ -1004,6 +1036,12 @@ echo '{}' | http --verbose ":8080/greeter"</pre>
 <ul>
 <li>
 <p>Generell error handling</p>
+</li>
+<li>
+<p>Vis først feilhåndtering ved IllegalArgumentException fra egen kode</p>
+</li>
+<li>
+<p>Vis deretter hvordan man kan override feilmeldinger fra javax.validation feil.</p>
 <div class="literalblock">
 <div class="content">
 <pre>echo '{}' | http --verbose ":8080/greeter"</pre>
@@ -1059,45 +1097,54 @@ echo '{}' | http --verbose ":8080/greeter"</pre>
 <li>
 <p>Kalle ekstern tjeneste</p>
 </li>
+<li>
+<p>Forklare at vi skal bruke httpbin som eksempel. Online verktøy med ulike utilities for http.</p>
+</li>
+<li>
+<p>Vise <a href="https://httpbin.org" class="bare">https://httpbin.org</a> i nettleseren og vise /anything-endepunktet.</p>
+</li>
+<li>
+<p>Forklare hvordan @Configuration beans skiller seg fra @Component og @Controller</p>
+</li>
 </ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>package com.example.demoweb;
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demoweb</span>;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.GetMapping</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RequestMapping</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RestController</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.client.RestTemplate</span>;
 
-import java.util.Map;
+<span class="keyword">import</span> <span class="include">java.util.Map</span>;
 
-@RestController
-@RequestMapping("/external")
-public class ExternalServiceController {
+<span class="annotation">@RestController</span>
+<span class="annotation">@RequestMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/external</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ExternalServiceController</span> {
 
-    private RestTemplate restTemplate;
+    <span class="directive">private</span> RestTemplate restTemplate;
 
 
-    public ExternalServiceController(RestTemplate restTemplate) {
+    <span class="directive">public</span> ExternalServiceController(RestTemplate restTemplate) {
 
-        this.restTemplate = restTemplate;
+        <span class="local-variable">this</span>.restTemplate = restTemplate;
     }
 
 
-    @GetMapping
-    public Map echo() {
+    <span class="annotation">@GetMapping</span>
+    <span class="directive">public</span> <span class="predefined-type">Map</span> echo() {
 
-        return restTemplate.getForEntity("https://httpbin.org/anything/test", Map.class).getBody();
+        <span class="keyword">return</span> restTemplate.getForEntity(<span class="string"><span class="delimiter">&quot;</span><span class="content">https://httpbin.org/anything/test</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">Map</span>.class).getBody();
     }
-}</pre>
+}</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demoweb</span>;
 
-<span class="keyword">import</span> <span class="include">java.util.Collections</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">java.util.List.of</span>;
 
 <span class="keyword">import</span> <span class="include">org.springframework.boot.web.client.RestTemplateBuilder</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.context.annotation.Bean</span>;
@@ -1110,13 +1157,10 @@ public class ExternalServiceController {
     <span class="annotation">@Bean</span>
     RestTemplate restTemplate(RestTemplateBuilder builder) {
 
-        RestTemplate restTemplate = builder.build();
-        restTemplate.setInterceptors(<span class="predefined-type">Collections</span>.singletonList((request, body, execution) -&gt; {
-            request.getHeaders().put(<span class="string"><span class="delimiter">&quot;</span><span class="content">custom-header</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">Collections</span>.singletonList(<span class="string"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>));
+        <span class="keyword">return</span> builder.additionalInterceptors(((request, body, execution) -&gt; {
+            request.getHeaders().put(<span class="string"><span class="delimiter">&quot;</span><span class="content">custom-header</span><span class="delimiter">&quot;</span></span>, of(<span class="string"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>));
             <span class="keyword">return</span> execution.execute(request, body);
-        }));
-        <span class="keyword">return</span> restTemplate;
-
+        })).build();
     }
 }</code></pre>
 </div>
@@ -1143,25 +1187,20 @@ public class ExternalServiceController {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demowebcache</span>;
-
-<span class="keyword">import</span> <span class="include">org.springframework.boot.SpringApplication</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.boot.autoconfigure.SpringBootApplication</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.cache.annotation.EnableCaching</span>;
-
-<span class="annotation">@SpringBootApplication</span>
-<span class="annotation">@EnableCaching</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">DemoWebcacheApplication</span> {
-
-        <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) {
-                SpringApplication.run(DemoWebcacheApplication.class, args);
-        }
-}</code></pre>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@EnableCaching</span>
+<span class="annotation">@Configuration</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ApplicationConfiguration</span> {</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demowebcache</span>;
+
+<span class="keyword">import</span> <span class="include">java.time.LocalDateTime</span>;
+
+<span class="keyword">import</span> <span class="include">javax.validation.Valid</span>;
+<span class="keyword">import</span> <span class="include">javax.validation.constraints.NotNull</span>;
+<span class="keyword">import</span> <span class="include">javax.validation.constraints.Pattern</span>;
 
 <span class="keyword">import</span> <span class="include">org.springframework.cache.annotation.CacheEvict</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.cache.annotation.Cacheable</span>;
@@ -1170,11 +1209,10 @@ public class ExternalServiceController {
 <span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RequestParam</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RestController</span>;
 
-<span class="keyword">import</span> <span class="include">javax.validation.Valid</span>;
-<span class="keyword">import</span> <span class="include">javax.validation.constraints.NotNull</span>;
-<span class="keyword">import</span> <span class="include">javax.validation.constraints.Pattern</span>;
-<span class="keyword">import</span> <span class="include">java.io.Serializable</span>;
-<span class="keyword">import</span> <span class="include">java.time.Instant</span>;
+<span class="keyword">import</span> <span class="include">com.fasterxml.jackson.databind.annotation.JsonDeserialize</span>;
+<span class="keyword">import</span> <span class="include">com.fasterxml.jackson.databind.annotation.JsonSerialize</span>;
+<span class="keyword">import</span> <span class="include">com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer</span>;
+<span class="keyword">import</span> <span class="include">com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer</span>;
 
 <span class="annotation">@RestController</span>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">GreetingController</span> {
@@ -1185,60 +1223,59 @@ public class ExternalServiceController {
         <span class="local-variable">this</span>.greetingService = greetingService;
     }
 
-    <span class="annotation">@RequestMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/hello</span><span class="delimiter">&quot;</span></span>)
-    <span class="annotation">@Cacheable</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">hello</span><span class="delimiter">&quot;</span></span>)
-    <span class="directive">public</span> GreetingResponse hello(<span class="annotation">@RequestParam</span>(required = <span class="predefined-constant">false</span>) <span class="predefined-type">String</span> name) <span class="directive">throws</span> <span class="exception">InterruptedException</span> {
+    <span class="annotation">@RequestMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/greet</span><span class="delimiter">&quot;</span></span>)
+    <span class="annotation">@Cacheable</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">greeting</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">public</span> GreetingResponse greet(<span class="annotation">@RequestParam</span>(required = <span class="predefined-constant">false</span>) <span class="predefined-type">String</span> name) <span class="directive">throws</span> <span class="exception">InterruptedException</span> {
 
         <span class="predefined-type">Thread</span>.sleep(<span class="integer">3000</span>);
         GreetingResponse response = <span class="keyword">new</span> GreetingResponse();
-        response.greeting = greetingService.getGreeting(name);
+        response.setGreeting(greetingService.getGreeting(name));
         <span class="keyword">return</span> response;
     }
 
-
     <span class="annotation">@RequestMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/greeter</span><span class="delimiter">&quot;</span></span>)
-    <span class="annotation">@CacheEvict</span>(cacheNames = <span class="string"><span class="delimiter">&quot;</span><span class="content">hello</span><span class="delimiter">&quot;</span></span>, allEntries = <span class="predefined-constant">true</span>)
+    <span class="annotation">@CacheEvict</span>(cacheNames = <span class="string"><span class="delimiter">&quot;</span><span class="content">greeting</span><span class="delimiter">&quot;</span></span>, allEntries = <span class="predefined-constant">true</span>)
     <span class="directive">public</span> <span class="type">void</span> updateGreeter(<span class="annotation">@Valid</span> <span class="annotation">@RequestBody</span> UpdateGreeterPayload payload) {
 
-        <span class="local-variable">this</span>.greetingService.setGreeter(payload.greeter);
+        <span class="local-variable">this</span>.greetingService.setGreeter(payload.name);
     }
 }
 
-<span class="type">class</span> <span class="class">GreetingResponse</span> <span class="directive">implements</span> <span class="predefined-type">Serializable</span> {
+<span class="type">class</span> <span class="class">GreetingResponse</span> <span class="comment">/* implements Serializable */</span> {
 
-    <span class="predefined-type">String</span> greeting;
+    <span class="directive">private</span> <span class="predefined-type">String</span> greeting;
 
-    Instant createdAt = Instant.now();
-
+    <span class="annotation">@JsonSerialize</span>(using = LocalDateTimeSerializer.class)
+    <span class="annotation">@JsonDeserialize</span>(using = LocalDateTimeDeserializer.class)
+    <span class="directive">private</span> LocalDateTime createdAt = LocalDateTime.now();
 
     <span class="directive">public</span> <span class="predefined-type">String</span> getGreeting() {
-
         <span class="keyword">return</span> greeting;
     }
 
+    <span class="directive">public</span> <span class="type">void</span> setGreeting(<span class="predefined-type">String</span> greeting) {
+        <span class="local-variable">this</span>.greeting = greeting;
+    }
 
-    <span class="directive">public</span> Instant getCreatedAt() {
-
+    <span class="directive">public</span> LocalDateTime getCreatedAt() {
         <span class="keyword">return</span> createdAt;
     }
 }
 
 <span class="type">class</span> <span class="class">UpdateGreeterPayload</span> {
 
-    <span class="predefined-type">String</span> greeter;
-
+    <span class="predefined-type">String</span> name;
 
     <span class="annotation">@NotNull</span>
     <span class="annotation">@Pattern</span>(regexp = <span class="string"><span class="delimiter">&quot;</span><span class="content">[A-z</span><span class="char">\\</span><span class="content">s]+</span><span class="delimiter">&quot;</span></span>)
-    <span class="directive">public</span> <span class="predefined-type">String</span> getGreeter() {
+    <span class="directive">public</span> <span class="predefined-type">String</span> getName() {
 
-        <span class="keyword">return</span> greeter;
+        <span class="keyword">return</span> name;
     }
 
+    <span class="directive">public</span> <span class="type">void</span> setName(<span class="predefined-type">String</span> name) {
 
-    <span class="directive">public</span> <span class="type">void</span> setGreeter(<span class="predefined-type">String</span> greeter) {
-
-        <span class="local-variable">this</span>.greeter = greeter;
+        <span class="local-variable">this</span>.name = name;
     }
 }</code></pre>
 </div>
@@ -1267,12 +1304,34 @@ http --verbose :8080/greeter greeter=Espen</pre>
 &lt;/dependency&gt;</pre>
 </div>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>Husk at GreetingResponse må implementere Serializable</p>
 <div class="literalblock">
 <div class="content">
 <pre>docker run -p 6379:6379 --rm --name redis redis
 docker run -it --link redis:redis --rm redis redis-cli -h redis -p 6379
 keys *
 get &lt;key&gt;</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Konfigurere redis til å serialisere som JSON:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Bean</span>
+<span class="directive">public</span> CacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
+    SerializationPair&lt;<span class="predefined-type">Object</span>&gt; jsonSerializer = fromSerializer(<span class="keyword">new</span> GenericJackson2JsonRedisSerializer());
+    <span class="keyword">return</span> RedisCacheManagerBuilder
+        .fromConnectionFactory(redisConnectionFactory)
+        .cacheDefaults(defaultCacheConfig().serializeValuesWith(jsonSerializer))
+        .build();
+}</code></pre>
 </div>
 </div>
 </div>
@@ -1937,7 +1996,7 @@ http ":8080/contact/" firstName=Espen lastName=Strømland email=Espen.Stromland@
     <span class="directive">public</span> <span class="type">void</span> verifyForwardsHttpbinResponse() {
 
         <span class="local-variable">this</span>.server.expect(requestTo(<span class="string"><span class="delimiter">&quot;</span><span class="content">https://httpbin.org/anything/test</span><span class="delimiter">&quot;</span></span>))
-            .andRespond(withSuccess(<span class="keyword">new</span> ClassPathResource(<span class="string"><span class="delimiter">&quot;</span><span class="content">com/example/demowebdb/echo_response.json</span><span class="delimiter">&quot;</span></span>), APPLICATION_JSON));
+            .andRespond(withSuccess(<span class="keyword">new</span> ClassPathResource(<span class="string"><span class="delimiter">&quot;</span><span class="content">com/example/demowebjpa/echo_response.json</span><span class="delimiter">&quot;</span></span>), APPLICATION_JSON));
 
         <span class="predefined-type">Map</span> response = externalServiceController.echo(<span class="string"><span class="delimiter">&quot;</span><span class="content">test</span><span class="delimiter">&quot;</span></span>);
         assertThat(response.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span>)).isEqualTo(<span class="string"><span class="delimiter">&quot;</span><span class="content">https://httpbin.org/anything/test</span><span class="delimiter">&quot;</span></span>);
@@ -2187,7 +2246,7 @@ http://localhost:8080/actuator/httptrace</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-04-11 08:45:32 CEST
+Last updated 2019-08-29 08:34:36 CEST
 </div>
 </div>
 </body>
