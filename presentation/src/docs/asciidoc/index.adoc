@@ -86,6 +86,7 @@ public class DemoApplication {
 == Demo
 Studere en minimal Spring Boot applikasjon
 
+* https://start.spring.io
 * Classpath scanning
 * Dependency Injection
 * Konfigurasjon (relaxed binding)
