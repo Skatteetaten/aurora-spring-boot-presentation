@@ -1,32 +1,31 @@
 package com.example.demowebjpa;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@DataJpaTest
 @AutoConfigureTestDatabase
-//@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 public class ContactRepositoryTest {
 
     @Autowired
     ContactRepository contactRepository;
 
     @Test
-    public void findAllByLastName_filtersByLastName() {
+    public void findAllByLastName() {
 
         String lastName = "Solheim";
-        List<Contact> byLastName = contactRepository.findAllByLastName(lastName);
+        List<Contact> contacts = contactRepository.findAllByLastName(lastName);
 
-        assertThat(byLastName.size()).isEqualTo(2);
-        assertThat(byLastName).allMatch((it) -> it.getLastName().equals(lastName));
+        assertThat(contacts.size()).isEqualTo(2);
+        assertThat(contacts).allMatch(it -> it.getLastName().equals(lastName));
     }
 }
