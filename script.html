@@ -741,16 +741,23 @@ java -jar target/demo-0.0.1-SNAPSHOT.jar</pre>
 </li>
 <li>
 <p>Konfigurere logging (logging.level.com.example.demo = DEBUG)</p>
-<div class="literalblock">
-<div class="content">
-<pre>logging:
-  level:
-    com:
-      example:
-        demo: INFO</pre>
-</div>
+</li>
+</ul>
 </div>
 </li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">logging</span>:
+  <span class="key">level</span>:
+    <span class="key">com</span>:
+      <span class="key">example</span>:
+        <span class="key">demo</span>: <span class="string"><span class="content">INFO</span></span></code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
 <li>
 <p>Vise fra kommandolinje:</p>
 <div class="literalblock">
@@ -766,9 +773,6 @@ java -jar target/demo-0.0.1-SNAPSHOT.jar</pre>
 <pre>export LOGGING_LEVEL_COM_EXAMPLE_DEMO=DEBUG
 java -jar  target/demo-0.0.1-SNAPSHOT.jar</pre>
 </div>
-</div>
-</li>
-</ul>
 </div>
 </li>
 </ul>
@@ -792,9 +796,6 @@ java -jar  target/demo-0.0.1-SNAPSHOT.jar</pre>
 <div class="sectionbody">
 <div class="ulist">
 <ul>
-<li>
-<p>start.sping.io med web (ta bort tester)</p>
-</li>
 <li>
 <p>vise avhengigheter (kommentere jackson, hibernate-validator, tomcat og spring-webmvc)</p>
 </li>
@@ -1179,10 +1180,10 @@ echo '{}' | http --verbose ":8080/greeter"</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>&lt;dependency&gt;
-	&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-	&lt;artifactId&gt;spring-boot-starter-cache&lt;/artifactId&gt;
-&lt;/dependency&gt;</pre>
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+        <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+        <span class="tag">&lt;artifactId&gt;</span>spring-boot-starter-cache<span class="tag">&lt;/artifactId&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -1298,27 +1299,34 @@ http --verbose :8080/greeter greeter=Espen</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>&lt;dependency&gt;
-	&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-	&lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;
-&lt;/dependency&gt;</pre>
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+        <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+        <span class="tag">&lt;artifactId&gt;</span>spring-boot-starter-data-redis<span class="tag">&lt;/artifactId&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
 <div class="ulist">
 <ul>
 <li>
 <p>Husk at GreetingResponse må implementere Serializable</p>
-<div class="literalblock">
+</li>
+</ul>
+</div>
+<div class="listingblock">
 <div class="content">
-<pre>docker run -p 6379:6379 --rm --name redis redis
-docker run -it --link redis:redis --rm redis redis-cli -h redis -p 6379
-keys *
-get &lt;key&gt;</pre>
+<pre class="CodeRay highlight"><code data-lang="bash">  docker run -p 6379:6379 --rm --name redis redis
+  docker run -it --link redis:redis --rm redis redis-cli -h redis -p 6379
+  keys *
+  get &lt;key&gt;</code></pre>
 </div>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>Konfigurere redis til å serialisere som JSON (ApplicationConfiguration)</p>
 </li>
 <li>
-<p>Konfigurere redis til å serialisere som JSON:</p>
+<p>Husk også <code>@JsonSerialize(using = LocalDateTimeSerializer.class)</code> og <code>@JsonDeserialize(using = LocalDateTimeDeserializer.class)</code> på createdAt.</p>
 </li>
 </ul>
 </div>
@@ -1359,15 +1367,8 @@ get &lt;key&gt;</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>CREATE TABLE contact
-(
-    id SERIAL PRIMARY KEY,
-    first_name VARCHAR,
-    last_name VARCHAR,
-    email VARCHAR
-);
-
-insert INTO contact (first_name, last_name, email) VALUES ('Bent', 'Solheim', 'BentAndre.Solheim@skatteetaten.no');</pre>
+<pre class="CodeRay highlight"><code data-lang="sql"><span class="class">INSERT</span> <span class="class">INTO</span> contact (id, first_name, last_name, email) <span class="keyword">VALUES</span> (<span class="integer">1</span>, <span class="string"><span class="delimiter">'</span><span class="content">Bent</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Solheim</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">BentAndre.Solheim@Skatteetaten.no</span><span class="delimiter">'</span></span>);
+<span class="class">INSERT</span> <span class="class">INTO</span> contact (id, first_name, last_name, email) <span class="keyword">VALUES</span> (<span class="integer">2</span>, <span class="string"><span class="delimiter">'</span><span class="content">Espen</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Strømland</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Espen.Stromland@Skatteetaten.no</span><span class="delimiter">'</span></span>);</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -1382,10 +1383,10 @@ insert INTO contact (first_name, last_name, email) VALUES ('Bent', 'Solheim', 'B
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>&lt;dependency&gt;
-	&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-	&lt;artifactId&gt;spring-boot-starter-jdbc&lt;/artifactId&gt;
-&lt;/dependency&gt;</pre>
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+        <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+        <span class="tag">&lt;artifactId&gt;</span>spring-boot-starter-jdbc<span class="tag">&lt;/artifactId&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -1400,10 +1401,10 @@ insert INTO contact (first_name, last_name, email) VALUES ('Bent', 'Solheim', 'B
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>&lt;dependency&gt;
-  &lt;groupId&gt;org.postgresql&lt;/groupId&gt;
-  &lt;artifactId&gt;postgresql&lt;/artifactId&gt;
-&lt;/dependency&gt;</pre>
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+  <span class="tag">&lt;groupId&gt;</span>org.postgresql<span class="tag">&lt;/groupId&gt;</span>
+  <span class="tag">&lt;artifactId&gt;</span>postgresql<span class="tag">&lt;/artifactId&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -1415,9 +1416,11 @@ insert INTO contact (first_name, last_name, email) VALUES ('Bent', 'Solheim', 'B
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>spring.datasource.url: jdbc:postgresql://localhost/postgres
-spring.datasource.username: postgres
-spring.datasource.password: 123dev</pre>
+<pre>spring:
+    datasource:
+        url: jdbc:postgresql://localhost/postgres
+        username: postgres
+        password: 123dev</pre>
 </div>
 </div>
 <div class="ulist">
@@ -1429,199 +1432,62 @@ spring.datasource.password: 123dev</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>package com.example.demowebjdbc;
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demowebjdbc</span>;
 
-import java.util.List;
+<span class="keyword">import</span> <span class="include">java.util.List</span>;
 
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+<span class="keyword">import</span> <span class="include">org.springframework.jdbc.core.BeanPropertyRowMapper</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.jdbc.core.JdbcTemplate</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.stereotype.Service</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.GetMapping</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.PostMapping</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RequestBody</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RequestMapping</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RestController</span>;
 
-@RestController
-@RequestMapping("/contact")
-public class ContactController {
+<span class="annotation">@RestController</span>
+<span class="annotation">@RequestMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/contact</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ContactController</span> {
 
-    private ContactService contactService;
+    <span class="directive">private</span> ContactService contactService;
 
-    public ContactController(ContactService contactService) {
-        this.contactService = contactService;
+    <span class="directive">public</span> ContactController(ContactService contactService) {
+        <span class="local-variable">this</span>.contactService = contactService;
     }
 
-    @GetMapping("/")
-    public List&lt;Contact&gt; getAll() {
+    <span class="annotation">@GetMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">public</span> <span class="predefined-type">List</span>&lt;Contact&gt; getAll() {
 
-        return contactService.findAllContacts();
+        <span class="keyword">return</span> contactService.findAllContacts();
     }
 
-    @PostMapping("/")
-    void postContact(@RequestBody Contact contact) {
+    <span class="annotation">@PostMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/</span><span class="delimiter">&quot;</span></span>)
+    <span class="type">void</span> postContact(<span class="annotation">@RequestBody</span> Contact contact) {
 
         contactService.createContact(contact);
     }
 }
 
-@Service
-class ContactService {
+<span class="annotation">@Service</span>
+<span class="type">class</span> <span class="class">ContactService</span> {
 
-    private JdbcTemplate jdbcTemplate;
+    <span class="directive">private</span> JdbcTemplate jdbcTemplate;
 
-    public ContactService(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    <span class="directive">public</span> ContactService(JdbcTemplate jdbcTemplate) {
+        <span class="local-variable">this</span>.jdbcTemplate = jdbcTemplate;
     }
 
-    List&lt;Contact&gt; findAllContacts() {
+    <span class="predefined-type">List</span>&lt;Contact&gt; findAllContacts() {
 
-        return jdbcTemplate.query("select * from CONTACT", new BeanPropertyRowMapper&lt;&gt;(Contact.class));
+        <span class="keyword">return</span> jdbcTemplate.query(<span class="string"><span class="delimiter">&quot;</span><span class="content">select * from CONTACT</span><span class="delimiter">&quot;</span></span>, <span class="keyword">new</span> BeanPropertyRowMapper&lt;&gt;(Contact.class));
     }
 
-    public void createContact(Contact c) {
-        jdbcTemplate.update("insert into CONTACT (FIRST_NAME, LAST_NAME, EMAIL) values (?, ?, ?)", c.firstName, c.lastName, c.email);
+    <span class="directive">public</span> <span class="type">void</span> createContact(Contact c) {
+        jdbcTemplate.update(<span class="string"><span class="delimiter">&quot;</span><span class="content">insert into CONTACT (FIRST_NAME, LAST_NAME, EMAIL) values (?, ?, ?)</span><span class="delimiter">&quot;</span></span>, c.firstName, c.lastName, c.email);
     }
 }
 
-class Contact {
-    Long id;
-    String firstName;
-    String lastName;
-    String email;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-}</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>http ":8080/contact/
-http ":8080/contact/" firstName=Espen lastName=Strømland email=Espen.Stromland@skatteetaten.no</pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_migreringer">Migreringer</h2>
-<div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p>Migrations; legg på avhengighet i pom.xml</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">&lt;dependency&gt;
-  &lt;groupId&gt;org.flywaydb&lt;/groupId&gt;
-  &lt;artifactId&gt;flyway-core&lt;/artifactId&gt;
-&lt;/dependency&gt;</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Slett gamle tabeller</p>
-</li>
-<li>
-<p>Lag migrering i src/main/resources/db/migration/V201803021300__create_contact_table_with_data.sql</p>
-</li>
-<li>
-<p>Vis flyway_schema_history</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_jpa">JPA</h2>
-<div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p>Legg på avhengighet</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>&lt;dependency&gt;
-  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-  &lt;artifactId&gt;spring-boot-starter-data-jpa&lt;/artifactId&gt;
-&lt;/dependency&gt;</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Sett property for å unngå feilmelding i loggen</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true</pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demowebjpa</span>;
-
-<span class="keyword">import</span> <span class="include">java.util.List</span>;
-
-<span class="keyword">import</span> <span class="include">javax.persistence.Entity</span>;
-<span class="keyword">import</span> <span class="include">javax.persistence.GeneratedValue</span>;
-<span class="keyword">import</span> <span class="include">javax.persistence.GenerationType</span>;
-<span class="keyword">import</span> <span class="include">javax.persistence.Id</span>;
-
-<span class="keyword">import</span> <span class="include">org.apache.logging.log4j.util.Strings</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.data.jpa.repository.JpaRepository</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.http.HttpStatus</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.http.ResponseEntity</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.GetMapping</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.PathVariable</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.PostMapping</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RequestBody</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RequestMapping</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RequestParam</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RestController</span>;
-
-<span class="annotation">@Entity</span>
 <span class="type">class</span> <span class="class">Contact</span> {
-    <span class="annotation">@Id</span>
-    <span class="annotation">@GeneratedValue</span>(strategy = GenerationType.IDENTITY)
     <span class="predefined-type">Long</span> id;
     <span class="predefined-type">String</span> firstName;
     <span class="predefined-type">String</span> lastName;
@@ -1658,6 +1524,288 @@ http ":8080/contact/" firstName=Espen lastName=Strømland email=Espen.Stromland@
     <span class="directive">public</span> <span class="type">void</span> setEmail(<span class="predefined-type">String</span> email) {
         <span class="local-variable">this</span>.email = email;
     }
+}</code></pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>http ":8080/contact/
+http ":8080/contact/" firstName=Espen lastName=Strømland email=Espen.Stromland@skatteetaten.no</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_migreringer">Migreringer</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Migrations; legg på avhengighet i pom.xml</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+  <span class="tag">&lt;groupId&gt;</span>org.flywaydb<span class="tag">&lt;/groupId&gt;</span>
+  <span class="tag">&lt;artifactId&gt;</span>flyway-core<span class="tag">&lt;/artifactId&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Opprett folder <code>src/main/resources/db/migration/</code></p>
+</li>
+<li>
+<p>Lag migreringer</p>
+<div class="ulist">
+<ul>
+<li>
+<p>V201908281300__create_contact_table.sql</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sql"><span class="class">CREATE</span> <span class="type">TABLE</span> contact
+(
+    id SERIAL <span class="directive">PRIMARY</span> <span class="type">KEY</span>,
+    first_name <span class="predefined-type">VARCHAR</span>,
+    last_name <span class="predefined-type">VARCHAR</span>,
+    email <span class="predefined-type">VARCHAR</span>
+);</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>V201908281301__add_data.sql</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sql"><span class="class">INSERT</span> <span class="class">INTO</span> contact (id, first_name, last_name, email) <span class="keyword">VALUES</span> (<span class="integer">1</span>, <span class="string"><span class="delimiter">'</span><span class="content">Bent</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Solheim</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">BentAndre.Solheim@Skatteetaten.no</span><span class="delimiter">'</span></span>);
+<span class="class">INSERT</span> <span class="class">INTO</span> contact (id, first_name, last_name, email) <span class="keyword">VALUES</span> (<span class="integer">2</span>, <span class="string"><span class="delimiter">'</span><span class="content">Espen</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Strømland</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Espen.Stromland@Skatteetaten.no</span><span class="delimiter">'</span></span>);</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Vis hva som skjer dersom man kjører flyway med eksisterende tabell (feiler)</p>
+</li>
+<li>
+<p>Slett gamle tabeller</p>
+</li>
+<li>
+<p>Vis flyway_schema_history</p>
+</li>
+<li>
+<p>Vis hva som skjer dersom man endrer på en eksisterende migrering.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_jpa">JPA</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Legg på avhengighet</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+  <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+  <span class="tag">&lt;artifactId&gt;</span>spring-boot-starter-data-jpa<span class="tag">&lt;/artifactId&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Sett property for å unngå feilmelding i loggen</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Gjør Contact om til @Entity</p>
+</li>
+<li>
+<p>Lag ContactRepository (extends JpaRepository&lt;Contact, Integer&gt;)</p>
+</li>
+<li>
+<p>Lag @GetMapping("/{id}")</p>
+</li>
+<li>
+<p>Lag @GetMapping("/") List&lt;Contact&gt; getAllContacts(@RequestParam(required = false) String lastName)</p>
+</li>
+<li>
+<p>Vis varianter med <code>findAllByLastNameContains</code> og <code>findAllByLastName</code>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demowebjpa</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.List</span>;
+<span class="keyword">import</span> <span class="include">java.util.Optional</span>;
+
+<span class="keyword">import</span> <span class="include">javax.persistence.Entity</span>;
+<span class="keyword">import</span> <span class="include">javax.persistence.GeneratedValue</span>;
+<span class="keyword">import</span> <span class="include">javax.persistence.GenerationType</span>;
+<span class="keyword">import</span> <span class="include">javax.persistence.Id</span>;
+
+<span class="keyword">import</span> <span class="include">org.springframework.data.jpa.repository.JpaRepository</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.http.HttpStatus</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.http.ResponseEntity</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.stereotype.Component</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.DeleteMapping</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.GetMapping</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.PathVariable</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.PostMapping</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RequestBody</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RequestMapping</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RequestParam</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RestController</span>;
+
+<span class="annotation">@RestController</span>
+<span class="annotation">@RequestMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/contact</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ContactController</span> {
+
+    <span class="directive">private</span> ContactService contactService;
+
+    <span class="directive">public</span> ContactController(ContactService contactService) {
+        <span class="local-variable">this</span>.contactService = contactService;
+    }
+
+    <span class="annotation">@GetMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">public</span> <span class="predefined-type">List</span>&lt;Contact&gt; getAll(<span class="annotation">@RequestParam</span>(required = <span class="predefined-constant">false</span>) <span class="predefined-type">String</span> lastName) {
+
+        <span class="keyword">if</span> (lastName == <span class="predefined-constant">null</span>) {
+            <span class="keyword">return</span> contactService.findAllContacts();
+        }
+        <span class="keyword">return</span> contactService.findAllContactsByLastName(lastName);
+    }
+
+    <span class="annotation">@GetMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/{id}</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">public</span> ResponseEntity&lt;Contact&gt; getById(<span class="annotation">@PathVariable</span> <span class="predefined-type">Integer</span> id) {
+
+        <span class="keyword">return</span> contactService.findContactById(id)
+            .map(contact -&gt; <span class="keyword">new</span> ResponseEntity&lt;&gt;(contact, HttpStatus.OK))
+            .orElseGet(() -&gt; <span class="keyword">new</span> ResponseEntity&lt;&gt;(HttpStatus.NOT_FOUND));
+    }
+
+    <span class="annotation">@PostMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">public</span> <span class="type">void</span> postContact(<span class="annotation">@RequestBody</span> Contact payload) {
+
+        contactService.saveContact(payload);
+    }
+
+    <span class="annotation">@DeleteMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/{id}</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">public</span> <span class="type">void</span> deleteContact(<span class="annotation">@PathVariable</span> <span class="predefined-type">Integer</span> id) {
+
+        contactService.deleteContact(id);
+    }
+}
+
+<span class="annotation">@Component</span>
+<span class="type">class</span> <span class="class">ContactService</span> {
+
+    <span class="directive">private</span> ContactRepository contactRepository;
+
+    <span class="directive">public</span> ContactService(ContactRepository contactRepository) {
+        <span class="local-variable">this</span>.contactRepository = contactRepository;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">List</span>&lt;Contact&gt; findAllContacts() {
+
+        <span class="keyword">return</span> contactRepository.findAll();
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> saveContact(Contact contact) {
+
+        contactRepository.save(contact);
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> deleteContact(<span class="predefined-type">Integer</span> id) {
+
+        contactRepository.deleteById(id);
+    }
+
+    <span class="directive">public</span> Optional&lt;Contact&gt; findContactById(<span class="predefined-type">Integer</span> id) {
+
+        <span class="keyword">return</span> contactRepository.findById(id);
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">List</span>&lt;Contact&gt; findAllContactsByLastName(<span class="predefined-type">String</span> lastName) {
+
+        <span class="keyword">return</span> contactRepository.findAllByLastName(lastName);
+<span class="comment">//        return contactRepository.findAllByLastNameContains(lastName);</span>
+    }
+}
+
+<span class="type">interface</span> <span class="class">ContactRepository</span> <span class="directive">extends</span> JpaRepository&lt;Contact, <span class="predefined-type">Integer</span>&gt; {
+
+    <span class="predefined-type">List</span>&lt;Contact&gt; findAllByLastNameContains(<span class="predefined-type">String</span> lastName);
+    <span class="predefined-type">List</span>&lt;Contact&gt; findAllByLastName(<span class="predefined-type">String</span> lastName);
+}
+
+<span class="annotation">@Entity</span>
+<span class="type">class</span> <span class="class">Contact</span> {
+    <span class="annotation">@Id</span>
+    <span class="annotation">@GeneratedValue</span>(strategy = GenerationType.IDENTITY)
+    <span class="directive">private</span> <span class="predefined-type">Integer</span> id;
+    <span class="directive">private</span> <span class="predefined-type">String</span> firstName, lastName, email;
+
+    <span class="directive">public</span> <span class="predefined-type">Integer</span> getId() {
+        <span class="keyword">return</span> id;
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> setId(<span class="predefined-type">Integer</span> id) {
+        <span class="local-variable">this</span>.id = id;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> getFirstName() {
+        <span class="keyword">return</span> firstName;
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> setFirstName(<span class="predefined-type">String</span> firstName) {
+        <span class="local-variable">this</span>.firstName = firstName;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> getLastName() {
+        <span class="keyword">return</span> lastName;
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> setLastName(<span class="predefined-type">String</span> lastName) {
+        <span class="local-variable">this</span>.lastName = lastName;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> getEmail() {
+        <span class="keyword">return</span> email;
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> setEmail(<span class="predefined-type">String</span> email) {
+        <span class="local-variable">this</span>.email = email;
+    }
 
     <span class="annotation">@Override</span>
     <span class="directive">public</span> <span class="predefined-type">String</span> toString() {
@@ -1667,41 +1815,6 @@ http ":8080/contact/" firstName=Espen lastName=Strømland email=Espen.Stromland@
             <span class="string"><span class="delimiter">&quot;</span><span class="content">, lastName='</span><span class="delimiter">&quot;</span></span> + lastName + <span class="string"><span class="delimiter">'</span><span class="char">\'</span><span class="delimiter">'</span></span> +
             <span class="string"><span class="delimiter">&quot;</span><span class="content">, email='</span><span class="delimiter">&quot;</span></span> + email + <span class="string"><span class="delimiter">'</span><span class="char">\'</span><span class="delimiter">'</span></span> +
             <span class="string"><span class="delimiter">'</span><span class="content">}</span><span class="delimiter">'</span></span>;
-    }
-}
-
-<span class="type">interface</span> <span class="class">ContactRepository</span> <span class="directive">extends</span> JpaRepository&lt;Contact, <span class="predefined-type">Long</span>&gt; {
-    <span class="predefined-type">List</span>&lt;Contact&gt; findAllByLastName(<span class="predefined-type">String</span> lastName);
-}
-
-<span class="annotation">@RestController</span>
-<span class="annotation">@RequestMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/contact</span><span class="delimiter">&quot;</span></span>)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">ContactController</span> {
-
-    <span class="directive">private</span> ContactRepository contactRepository;
-
-    <span class="directive">public</span> ContactController(ContactRepository contactRepository) {
-        <span class="local-variable">this</span>.contactRepository = contactRepository;
-    }
-
-    <span class="annotation">@GetMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/{id}</span><span class="delimiter">&quot;</span></span>)
-    ResponseEntity&lt;Contact&gt; getContact(<span class="annotation">@PathVariable</span> <span class="predefined-type">Long</span> id) {
-        <span class="keyword">return</span> contactRepository.findById(id)
-            .map((it) -&gt; <span class="keyword">new</span> ResponseEntity&lt;&gt;(it, HttpStatus.OK))
-            .orElseGet(() -&gt; <span class="keyword">new</span> ResponseEntity&lt;&gt;(HttpStatus.NOT_FOUND));
-    }
-
-    <span class="annotation">@GetMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/</span><span class="delimiter">&quot;</span></span>)
-    <span class="predefined-type">List</span>&lt;Contact&gt; getAllContacts(<span class="annotation">@RequestParam</span>(required = <span class="predefined-constant">false</span>) <span class="predefined-type">String</span> lastName) {
-        <span class="keyword">if</span> (Strings.isBlank(lastName)) {
-            <span class="keyword">return</span> contactRepository.findAll();
-        }
-        <span class="keyword">return</span> contactRepository.findAllByLastName(lastName);
-    }
-
-    <span class="annotation">@PostMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/</span><span class="delimiter">&quot;</span></span>)
-    Contact postContact(<span class="annotation">@RequestBody</span> Contact contact) {
-        <span class="keyword">return</span> contactRepository.save(contact);
     }
 }</code></pre>
 </div>
@@ -1720,15 +1833,18 @@ http ":8080/contact/" firstName=Espen lastName=Strømland email=Espen.Stromland@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>&lt;dependency&gt;
-  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-  &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
-  &lt;scope&gt;test&lt;/scope&gt;
-&lt;/dependency&gt;</pre>
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+  <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+  <span class="tag">&lt;artifactId&gt;</span>spring-boot-starter-test<span class="tag">&lt;/artifactId&gt;</span>
+  <span class="tag">&lt;scope&gt;</span>test<span class="tag">&lt;/scope&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
 <div class="ulist">
 <ul>
+<li>
+<p>Begynne med ContactRepositoryTest</p>
+</li>
 <li>
 <p>Vise @SpringBootTest</p>
 </li>
@@ -1736,17 +1852,23 @@ http ":8080/contact/" firstName=Espen lastName=Strømland email=Espen.Stromland@
 <p>Vise hvordan man kan @Autowire inn objekter i testen.</p>
 </li>
 <li>
+<p>Kjøre først uten @AutoConfigureTestDatabase.</p>
+</li>
+<li>
 <p>Databasetest: Legge til h2 og vise at applikasjonen starter opp med in-memory database automatisk. Demonstrere at @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE) kan brukes til å påvirke dette.</p>
+</li>
+<li>
+<p>Endre test til å bruke <code>@DataJpaTest</code> istedenfor <code>@SpringBootTest</code>.</p>
 </li>
 </ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>&lt;dependency&gt;
-  &lt;groupId&gt;com.h2database&lt;/groupId&gt;
-  &lt;artifactId&gt;h2&lt;/artifactId&gt;
-  &lt;scope&gt;test&lt;/scope&gt;
-&lt;/dependency&gt;</pre>
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+  <span class="tag">&lt;groupId&gt;</span>com.h2database<span class="tag">&lt;/groupId&gt;</span>
+  <span class="tag">&lt;artifactId&gt;</span>h2<span class="tag">&lt;/artifactId&gt;</span>
+  <span class="tag">&lt;scope&gt;</span>test<span class="tag">&lt;/scope&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -1765,8 +1887,8 @@ http ":8080/contact/" firstName=Espen lastName=Strømland email=Espen.Stromland@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;configuration&gt;&lt;!--&lt;root level="error" /&gt;--&gt;&lt;/configuration&gt;</pre>
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tag">&lt;configuration&gt;</span><span class="comment">&lt;!--&lt;root level=&quot;error&quot; /&gt;--&gt;</span><span class="tag">&lt;/configuration&gt;</span></code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -1781,40 +1903,52 @@ http ":8080/contact/" firstName=Espen lastName=Strømland email=Espen.Stromland@
 <pre>spring.main.banner-mode: off</pre>
 </div>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>Vis testspesifikk testdata <code>/src/test/resources/db/migration/V201908281302__add_some_test_data.sql</code>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sql"><span class="class">insert</span> <span class="class">INTO</span> contact (first_name, last_name, email) <span class="keyword">VALUES</span> (<span class="string"><span class="delimiter">'</span><span class="content">Christian</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Solheim</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">c@example.com</span><span class="delimiter">'</span></span>);
+<span class="class">insert</span> <span class="class">INTO</span> contact (first_name, last_name, email) <span class="keyword">VALUES</span> (<span class="string"><span class="delimiter">'</span><span class="content">Bjarte</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Karlsen</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Bjarte.Karlsen@skatteetaten.no</span><span class="delimiter">'</span></span>);</code></pre>
+</div>
+</div>
 <div class="sect2">
 <h3 id="_repository_test">Repository test</h3>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demowebjpa</span>;
 
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.assertj.core.api.Assertions.assertThat</span>;
-
-<span class="keyword">import</span> <span class="include">java.util.List</span>;
-
 <span class="keyword">import</span> <span class="include">org.junit.Test</span>;
 <span class="keyword">import</span> <span class="include">org.junit.runner.RunWith</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.beans.factory.annotation.Autowired</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.boot.test.context.SpringBootTest</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.test.context.junit4.SpringRunner</span>;
 
+<span class="keyword">import</span> <span class="include">java.util.List</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.assertj.core.api.Assertions.assertThat</span>;
+
 <span class="annotation">@RunWith</span>(SpringRunner.class)
-<span class="annotation">@SpringBootTest</span>
+<span class="annotation">@DataJpaTest</span>
 <span class="annotation">@AutoConfigureTestDatabase</span>
-<span class="comment">//@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)</span>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">ContactRepositoryTest</span> {
 
     <span class="annotation">@Autowired</span>
     ContactRepository contactRepository;
 
     <span class="annotation">@Test</span>
-    <span class="directive">public</span> <span class="type">void</span> findAllByLastName_filtersByLastName() {
+    <span class="directive">public</span> <span class="type">void</span> findAllByLastName() {
 
         <span class="predefined-type">String</span> lastName = <span class="string"><span class="delimiter">&quot;</span><span class="content">Solheim</span><span class="delimiter">&quot;</span></span>;
-        <span class="predefined-type">List</span>&lt;Contact&gt; byLastName = contactRepository.findAllByLastName(lastName);
+        <span class="predefined-type">List</span>&lt;Contact&gt; contacts = contactRepository.findAllByLastName(lastName);
 
-        assertThat(byLastName.size()).isEqualTo(<span class="integer">2</span>);
-        assertThat(byLastName).allMatch((it) -&gt; it.getLastName().equals(lastName));
+        assertThat(contacts.size()).isEqualTo(<span class="integer">2</span>);
+        assertThat(contacts).allMatch(it -&gt; it.getLastName().equals(lastName));
     }
 }</code></pre>
 </div>
@@ -1836,45 +1970,43 @@ http ":8080/contact/" firstName=Espen lastName=Strømland email=Espen.Stromland@
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demowebjpa</span>;
 
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.assertj.core.api.Assertions.assertThat</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.mockito.BDDMockito.given</span>;
-
-<span class="keyword">import</span> <span class="include">java.util.Optional</span>;
-
 <span class="keyword">import</span> <span class="include">org.junit.Test</span>;
 <span class="keyword">import</span> <span class="include">org.junit.runner.RunWith</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.beans.factory.annotation.Autowired</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.boot.test.context.SpringBootTest</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.boot.test.mock.mockito.MockBean</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.http.HttpStatus</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.http.ResponseEntity</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.test.context.junit4.SpringRunner</span>;
 
+<span class="keyword">import</span> <span class="include">java.util.Optional</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.assertj.core.api.Assertions.assertThat</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.mockito.BDDMockito.given</span>;
+
 <span class="annotation">@RunWith</span>(SpringRunner.class)
-<span class="annotation">@SpringBootTest</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">ContactControllerTest</span> {
+<span class="annotation">@SpringBootTest</span>(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ContactServiceTest</span> {
 
     <span class="annotation">@Autowired</span>
-    ContactController contactController;
+    ContactService contactService;
 
     <span class="annotation">@MockBean</span>
     ContactRepository contactRepository;
 
     <span class="annotation">@Test</span>
-    <span class="directive">public</span> <span class="type">void</span> returnsStatusCodeNotFoundForNonexistingContacts() {
+    <span class="directive">public</span> <span class="type">void</span> returnsEmptyOptionalForNonexistingContacts() {
 
-        ResponseEntity&lt;Contact&gt; contact = contactController.getContact(<span class="integer">1L</span>);
+        Optional&lt;Contact&gt; contact = contactService.findContactById(<span class="integer">1</span>);
 
-        assertThat(contact.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(contact).isEmpty();
     }
 
     <span class="annotation">@Test</span>
-    <span class="directive">public</span> <span class="type">void</span> returnsStatusCodeOkForExistingContacts() {
+    <span class="directive">public</span> <span class="type">void</span> returnsContactForExistingContacts() {
 
-        given(contactRepository.findById(<span class="integer">1L</span>)).willReturn(Optional.of(<span class="keyword">new</span> Contact()));
-        ResponseEntity&lt;Contact&gt; contact = contactController.getContact(<span class="integer">1L</span>);
+        given(contactRepository.findById(<span class="integer">1</span>)).willReturn(Optional.of(<span class="keyword">new</span> Contact()));
+        Optional&lt;Contact&gt; contact = contactService.findContactById(<span class="integer">1</span>);
 
-        assertThat(contact.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(contact).isNotEmpty();
     }
 }</code></pre>
 </div>
@@ -1896,16 +2028,6 @@ http ":8080/contact/" firstName=Espen lastName=Strømland email=Espen.Stromland@
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.example.demowebjpa</span>;
 
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.CoreMatchers.is</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.mockito.ArgumentMatchers.eq</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.mockito.ArgumentMatchers.isNotNull</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.mockito.BDDMockito.given</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath</span>;
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.springframework.test.web.servlet.result.MockMvcResultMatchers.status</span>;
-
-<span class="keyword">import</span> <span class="include">java.util.Optional</span>;
-
 <span class="keyword">import</span> <span class="include">org.junit.Test</span>;
 <span class="keyword">import</span> <span class="include">org.junit.runner.RunWith</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.beans.factory.annotation.Autowired</span>;
@@ -1914,39 +2036,45 @@ http ":8080/contact/" firstName=Espen lastName=Strømland email=Espen.Stromland@
 <span class="keyword">import</span> <span class="include">org.springframework.http.MediaType</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.test.context.junit4.SpringRunner</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.test.web.servlet.MockMvc</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.test.web.servlet.MvcResult</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.Optional</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.CoreMatchers.is</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.mockito.BDDMockito.given</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.springframework.test.web.servlet.result.MockMvcResultMatchers.status</span>;
 
 <span class="annotation">@RunWith</span>(SpringRunner.class)
 <span class="annotation">@WebMvcTest</span>(ContactController.class)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">ContactEndpointTest</span> {
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ContactControllerTest</span> {
 
     <span class="annotation">@Autowired</span>
     MockMvc mvc;
 
     <span class="annotation">@MockBean</span>
-    ContactRepository contactRepository;
+    ContactService contactService;
 
     <span class="annotation">@Test</span>
     <span class="directive">public</span> <span class="type">void</span> contactResponseContainsExpectedFields() <span class="directive">throws</span> <span class="exception">Exception</span> {
 
         Contact contact = <span class="keyword">new</span> Contact() {{
-            id = <span class="integer">1L</span>;
-            firstName = <span class="string"><span class="delimiter">&quot;</span><span class="content">Bent</span><span class="delimiter">&quot;</span></span>;
-            lastName = <span class="string"><span class="delimiter">&quot;</span><span class="content">Solheim</span><span class="delimiter">&quot;</span></span>;
-            email = <span class="string"><span class="delimiter">&quot;</span><span class="content">bent@example.com</span><span class="delimiter">&quot;</span></span>;
+            setId(<span class="integer">1</span>);
+            setFirstName(<span class="string"><span class="delimiter">&quot;</span><span class="content">Bent André</span><span class="delimiter">&quot;</span></span>);
+            setLastName(<span class="string"><span class="delimiter">&quot;</span><span class="content">Solheim</span><span class="delimiter">&quot;</span></span>);
+            setEmail(<span class="string"><span class="delimiter">&quot;</span><span class="content">BentAndre.Solheim@Skatteetaten.no</span><span class="delimiter">&quot;</span></span>);
         }};
+        given(contactService.findContactById(<span class="integer">1</span>))
+            .willReturn(Optional.of(contact));
 
-        given(contactRepository.findById(<span class="integer">1L</span>)).willReturn(Optional.of(contact));
-
-        MvcResult result = mvc.perform(get(<span class="string"><span class="delimiter">&quot;</span><span class="content">/contact/1</span><span class="delimiter">&quot;</span></span>).accept(MediaType.APPLICATION_JSON))
+        <span class="predefined-type">String</span> contentAsString = mvc.perform(get(<span class="string"><span class="delimiter">&quot;</span><span class="content">/contact/1</span><span class="delimiter">&quot;</span></span>).accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath(<span class="string"><span class="delimiter">&quot;</span><span class="content">$.id</span><span class="delimiter">&quot;</span></span>, is(contact.getId().intValue())))
+            .andExpect(jsonPath(<span class="string"><span class="delimiter">&quot;</span><span class="content">$.id</span><span class="delimiter">&quot;</span></span>, is(contact.getId())))
             .andExpect(jsonPath(<span class="string"><span class="delimiter">&quot;</span><span class="content">$.firstName</span><span class="delimiter">&quot;</span></span>, is(contact.getFirstName())))
             .andExpect(jsonPath(<span class="string"><span class="delimiter">&quot;</span><span class="content">$.lastName</span><span class="delimiter">&quot;</span></span>, is(contact.getLastName())))
             .andExpect(jsonPath(<span class="string"><span class="delimiter">&quot;</span><span class="content">$.email</span><span class="delimiter">&quot;</span></span>, is(contact.getEmail())))
-            .andReturn();
-
-        <span class="predefined-type">System</span>.out.println(result.getResponse().getContentAsString());
+            .andReturn().getResponse().getContentAsString();
+        <span class="predefined-type">System</span>.out.println(contentAsString);
     }
 }</code></pre>
 </div>
@@ -1958,6 +2086,9 @@ http ":8080/contact/" firstName=Espen lastName=Strømland email=Espen.Stromland@
 <ul>
 <li>
 <p>Vise @RestClientTest</p>
+</li>
+<li>
+<p>Flytt cache config ut i egen fil. Cache er ikke med i ApplicationsContexten ved @RestClientTest</p>
 </li>
 </ul>
 </div>
@@ -2154,7 +2285,24 @@ http://localhost:8080/actuator/httptrace</pre>
 </div>
 </li>
 <li>
-<p>Skru på logging</p>
+<p>Vise loggers endepunkt:</p>
+<div class="literalblock">
+<div class="content">
+<pre>http://localhost:8080/actuator/loggers
+http://localhost:8080/actuator/loggers/com.example.demo</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Legg på logging på noe kode (DEBUG). Vis at dette ikke kommer i logg. Skru på DEBUG runtime;</p>
+<div class="literalblock">
+<div class="content">
+<pre>http --verbose "http://localhost:8080/actuator/loggers/com.example.demo" configuredLevel=DEBUG</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Skru på fil-logging</p>
 <div class="literalblock">
 <div class="content">
 <pre>logging.file=app.log</pre>
@@ -2246,7 +2394,7 @@ http://localhost:8080/actuator/httptrace</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-08-29 08:34:36 CEST
+Last updated 2019-08-29 12:31:18 CEST
 </div>
 </div>
 </body>
